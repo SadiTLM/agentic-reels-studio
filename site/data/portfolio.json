@@ -1,0 +1,95 @@
+{
+  "generated_at": "2026-11-21T08:23:46Z",
+  "brand": {
+    "owner": "Josué D.",
+    "alias": "SadiTLM",
+    "display_name": "Josué D. · SadiTLM",
+    "tagline": "Portafolio de Automatización Agéntica, Sistemas Multi-Agente y Producción de Contenido",
+    "handle": "@saditlm",
+    "github_org": "https://github.com/SadiTLM",
+    "email": "contacto@saditlm.dev",
+    "location": "Remote / Latam & Global",
+    "timezone": "America/Mexico_City"
+  },
+  "projects": [
+    {
+      "id": "harness2",
+      "name": "Harness² — Recursive Agent Harnessing",
+      "category": "Optimización Agéntica",
+      "status": "Fork Integrado",
+      "repo": "https://github.com/SadiTLM/harness2",
+      "upstream": "google-research/harness2",
+      "summary": "Framework que optimiza automáticamente prompts, herramientas, memoria, guardrails y subagentes alrededor de un modelo sin reentrenar sus pesos.",
+      "highlights": [
+        "Recursión a nivel de tarea (Propose-Probe-Compose) sin respuestas de referencia",
+        "Recursión entre tareas que acumula lecciones verificadas",
+        "Hasta +11.8 pts en LAB y +11.5 pts en WorkBuddy-Bench reportados por Google Research"
+      ],
+      "stack": [
+        "Python 3.12",
+        "OpenCode",
+        "Codex",
+        "Vertex AI"
+      ],
+      "reel_angle": "Por qué optimizar el sistema alrededor del modelo supera a entrenar otro modelo."
+    },
+    {
+      "id": "elephant-goldfish-model",
+      "name": "Elephant-Goldfish Model (EGM)",
+      "category": "Arquitectura & Revisión Spec-Driven",
+      "status": "Fork Integrado",
+      "repo": "https://github.com/SadiTLM/elephant-goldfish-model",
+      "upstream": "google/elephant-goldfish-model",
+      "summary": "Metodología dual donde un agente Elephant con contexto profundo redacta diseños y subagentes Goldfish sin memoria detectan puntos ciegos antes de programar.",
+      "highlights": [
+        "Separación estricta entre diseño con memoria profunda y auditoría sin sesgos",
+        "Revisión en 5 etapas con compuertas de decisión humanas",
+        "Compatible con Antigravity, Claude Code, Codex y OpenCode"
+      ],
+      "stack": [
+        "Multi-Agent",
+        "Skills",
+        "GitHub Actions",
+        "Astro"
+      ],
+      "reel_angle": "Cómo un agente sin memoria encuentra fallos en un plan antes de escribir código."
+    },
+    {
+      "id": "agentic-reels-studio",
+      "name": "Agentic Reels Studio",
+      "category": "Automatización de Contenido & Growth",
+      "status": "Activo en Producción",
+      "repo": "https://github.com/SadiTLM/agentic-reels-studio",
+      "upstream": "SadiTLM",
+      "summary": "Sistema completo de punta a punta: minería de tendencias, ideación con score de hooks, revisión Goldfish, render 9:16 con Remotion/FFmpeg, humanización de copys y publicación vía Meta Graph API.",
+      "highlights": [
+        "20 skills especializadas (last30days, ig-reel, ffmpeg/pillow, remotion-shorts, ig-human)",
+        "Renderizado 1080x1920 H.264/AAC local con validación automática de zonas seguras",
+        "Conector oficial Meta Instagram Graph API (URL pública y subida resumable)"
+      ],
+      "stack": [
+        "Python 3.11/3.12",
+        "Remotion",
+        "FFmpeg",
+        "Meta Graph API"
+      ],
+      "reel_angle": "Cómo monté una fábrica agéntica que investiga tendencias y produce Reels 9:16 desde la terminal."
+    }
+  ],
+  "showcase_reels": [
+    {
+      "id": "20261121-cuello-botella-agentes",
+      "title": "El cuello de botella en código IA (y cómo lo resuelve Elephant-Goldfish)",
+      "topic": "Harvard code review bottleneck + Elephant-Goldfish Model",
+      "project_ref": "elephant-goldfish-model",
+      "status": "ready_to_post",
+      "hook": "Sin 2da revisión, tu código IA falla.",
+      "hook_score": 87.0,
+      "goldfish_score": 89,
+      "duration_seconds": 18.55,
+      "caption": "Si tu agente audita su plan, ignora sus propios errores (464 comentarios en Hacker News lo confirman).\n\nProgramar con IA es veloz. Revisar codigo, no.\n\nEn mi portafolio como Josué D. (SadiTLM) separo dos roles con Elephant-Goldfish Model antes de tocar producción: primero, un agente Elephant diseña la arquitectura con el contexto completo del repositorio, requisitos y decisiones previas; después, un subagente Goldfish arranca sin memoria de esa charla y audita el plan desde cero para exponer puntos ciegos reales en tu automatizacion con agentes ia.\n\nComenta EGM y te paso el repositorio.\n\n#agentesia #automatizacion #elephantgoldfish #codereview",
+      "video_url": "assets/reels/20261121-cuello-botella-agentes.mp4",
+      "cover_url": "assets/reels/20261121-cuello-botella-agentes-cover.jpg"
+    }
+  ]
+}

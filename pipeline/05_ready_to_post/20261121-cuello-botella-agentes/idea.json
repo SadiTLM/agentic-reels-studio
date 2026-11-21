@@ -1,0 +1,138 @@
+{
+  "id": "20261121-cuello-botella-agentes",
+  "title": "El cuello de botella en código IA (y cómo lo resuelve Elephant-Goldfish)",
+  "topic": "Harvard code review bottleneck + Elephant-Goldfish Model",
+  "format": "reel",
+  "project_ref": "elephant-goldfish-model",
+  "handle": "@saditlm",
+  "created_at": "2026-11-21T08:18:42Z",
+  "status": "ready_to_post",
+  "hooks": [
+    {
+      "text": "Sin 2da revisión, tu código IA falla.",
+      "score": 87.0,
+      "verdict": "STRONG",
+      "weakest": "SPECIFICITY",
+      "flags": []
+    },
+    {
+      "text": "464 comentarios confirman por qué tu revisión IA falla.",
+      "score": 81.4,
+      "verdict": "STRONG",
+      "weakest": "STAKES",
+      "flags": []
+    },
+    {
+      "text": "Deja de pedirle a tu agente que audite su código.",
+      "score": 52.2,
+      "verdict": "OK",
+      "weakest": "SPECIFICITY",
+      "flags": []
+    }
+  ],
+  "selected_hook_index": 0,
+  "spoken_script": "Sin 2da revisión, tu código IA falla.\nEstudio de Harvard y 464 comentarios en Hacker News confirman el problema.\nEscribir es rápido.\nRevisar frena al equipo.\nCon Elephant-Goldfish Model dividimos dos roles.\nElephant diseña con todo el contexto.\nGoldfish entra sin memoria a detectar errores.\nComenta EGM para ver el código.",
+  "caption": "Si tu agente audita su plan, ignora sus propios errores (464 comentarios en Hacker News lo confirman).\n\nProgramar con IA es veloz. Revisar codigo, no.\n\nEn mi portafolio como Josué D. (SadiTLM) separo dos roles con Elephant-Goldfish Model antes de tocar producción: primero, un agente Elephant diseña la arquitectura con el contexto completo del repositorio, requisitos y decisiones previas; después, un subagente Goldfish arranca sin memoria de esa charla y audita el plan desde cero para exponer puntos ciegos reales en tu automatizacion con agentes ia.\n\nComenta EGM y te paso el repositorio.\n\n#agentesia #automatizacion #elephantgoldfish #codereview",
+  "keywords": [
+    "agentes ia",
+    "revisar codigo",
+    "automatizacion"
+  ],
+  "short_spec": {
+    "theme": {
+      "bg": "#0E1014",
+      "fg": "#F5F3EE",
+      "accent": "#E05A36",
+      "accentText": "#FFFFFF",
+      "font": "Inter",
+      "uppercase": false
+    },
+    "footer": "HN + Harvard 2026 · Josué D.",
+    "handle": "@saditlm",
+    "scenes": [
+      {
+        "type": "hook",
+        "text": "Sin 2da revisión, tu código IA frena producción",
+        "highlight": "frena producción"
+      },
+      {
+        "type": "stat",
+        "value": "464",
+        "label": "comentarios en HN sobre el cuello de botella al revisar código",
+        "highlight": "revisar código"
+      },
+      {
+        "type": "text",
+        "text": "Si el mismo agente audita su plan, ignora sus fallos",
+        "highlight": "ignora sus fallos"
+      },
+      {
+        "type": "item",
+        "rank": "01",
+        "title": "Agente Elephant",
+        "text": "Diseña con todo el contexto del proyecto",
+        "progress": true
+      },
+      {
+        "type": "item",
+        "rank": "02",
+        "title": "Revisor Goldfish",
+        "text": "Entra sin memoria para auditar puntos ciegos",
+        "progress": true
+      },
+      {
+        "type": "end",
+        "text": "Comenta EGM",
+        "sub": "y te paso el repositorio abierto",
+        "highlight": "EGM"
+      }
+    ]
+  },
+  "goldfish_review": {
+    "status": "reviewed",
+    "score": 89,
+    "verdict": "pass",
+    "notes": "Aplicadas correcciones Goldfish: dato HN 464 comentarios enmarcado con rigor, una sola idea (EGM), hook sincronizado y caption <125 chars en primera linea.",
+    "reviewed_at": "2026-11-21T08:21:42Z"
+  },
+  "approval": {
+    "approved": true,
+    "approved_by": "Josué D. (SadiTLM)",
+    "approved_at": "2026-11-21T08:21:42Z"
+  },
+  "beat_timing": {
+    "total_seconds": 18.55,
+    "total_words": 51,
+    "target_seconds": 20.0,
+    "beats_count": 8,
+    "notes": [
+      "Beat 1 has no number and no name in it. Hooks without something checkable are the ones that get scrolled.",
+      "Beat(s) 2 run past 4s. Either split the line or change what is on screen inside it. A static frame is where people leave.",
+      "Beats 6-8 have nothing concrete in them. Put a number, a name or a price in one of them.",
+      "Loops: the last beat repeats \"código\" from the hook. Second watches are free reach.",
+      "Length is on target (18.5s against 20.0s)."
+    ]
+  },
+  "copy_audit": {
+    "human_score": 78.0,
+    "human_verdict": "PASS",
+    "caption_verdict": "READY",
+    "caption_chars": 651,
+    "hashtags": [
+      "#agentesia",
+      "#automatizacion",
+      "#elephantgoldfish",
+      "#codereview"
+    ],
+    "visible_125": "Si tu agente audita su plan, ignora sus propios errores (464 comentarios en Hacker News lo confirman).\n\nProgramar con IA es v",
+    "audited_at": "2026-11-21T08:21:42Z"
+  },
+  "production": {
+    "dir": "pipeline/04_production/20261121-cuello-botella-agentes",
+    "video": "reel.mp4",
+    "cover": "cover.jpg",
+    "sheet": "sheet.jpg",
+    "zones": "zones.jpg",
+    "produced_at": "2026-11-21T08:23:13Z"
+  }
+}

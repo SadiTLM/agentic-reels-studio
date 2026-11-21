@@ -1,0 +1,35 @@
+{
+  "id": "20261121-cuello-botella-agentes",
+  "title": "El cuello de botella en código IA (y cómo lo resuelve Elephant-Goldfish)",
+  "format": "reel",
+  "project_ref": "elephant-goldfish-model",
+  "handle": "@saditlm",
+  "video_file": "reel.mp4",
+  "cover_file": "cover.jpg",
+  "caption_file": "caption.txt",
+  "caption": "Si tu agente audita su plan, ignora sus propios errores (464 comentarios en Hacker News lo confirman).\n\nProgramar con IA es veloz. Revisar codigo, no.\n\nEn mi portafolio como Josué D. (SadiTLM) separo dos roles con Elephant-Goldfish Model antes de tocar producción: primero, un agente Elephant diseña la arquitectura con el contexto completo del repositorio, requisitos y decisiones previas; después, un subagente Goldfish arranca sin memoria de esa charla y audita el plan desde cero para exponer puntos ciegos reales en tu automatizacion con agentes ia.\n\nComenta EGM y te paso el repositorio.\n\n#agentesia #automatizacion #elephantgoldfish #codereview",
+  "share_to_feed": true,
+  "packaged_at": "2026-11-21T08:23:46Z",
+  "approved": true,
+  "copy_audit": {
+    "human_score": 78.0,
+    "human_verdict": "PASS",
+    "caption_verdict": "READY",
+    "caption_chars": 651,
+    "hashtags": [
+      "#agentesia",
+      "#automatizacion",
+      "#elephantgoldfish",
+      "#codereview"
+    ],
+    "visible_125": "Si tu agente audita su plan, ignora sus propios errores (464 comentarios en Hacker News lo confirman).\n\nProgramar con IA es v",
+    "audited_at": "2026-11-21T08:21:42Z"
+  },
+  "goldfish_review": {
+    "status": "reviewed",
+    "score": 89,
+    "verdict": "pass",
+    "notes": "Aplicadas correcciones Goldfish: dato HN 464 comentarios enmarcado con rigor, una sola idea (EGM), hook sincronizado y caption <125 chars en primera linea.",
+    "reviewed_at": "2026-11-21T08:21:42Z"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "brand": {
+    "name": "Josué D. · SadiTLM",
+    "handle": "@saditlm"
+  },
+  "timezone": "America/Mexico_City",
+  "accounts": {
+    "main": {
+      "handle": "@saditlm",
+      "timezone": "America/Mexico_City",
+      "times": [
+        "19:00"
+      ]
+    }
+  },
+  "posts": [
+    {
+      "id": "20261121-cuello-botella-agentes",
+      "format": "reel",
+      "media": [
+        "reel.mp4"
+      ],
+      "cover": "cover.jpg",
+      "caption": "Si tu agente audita su plan, ignora sus propios errores (464 comentarios en Hacker News lo confirman).\n\nProgramar con IA es veloz. Revisar codigo, no.\n\nEn mi portafolio como Josué D. (SadiTLM) separo dos roles con Elephant-Goldfish Model antes de tocar producción: primero, un agente Elephant diseña la arquitectura con el contexto completo del repositorio, requisitos y decisiones previas; después, un subagente Goldfish arranca sin memoria de esa charla y audita el plan desde cero para exponer puntos ciegos reales en tu automatizacion con agentes ia.\n\nComenta EGM y te paso el repositorio.\n\n#agentesia #automatizacion #elephantgoldfish #codereview",
+      "targets": [
+        {
+          "account": "main"
+        }
+      ]
+    }
+  ]
+}

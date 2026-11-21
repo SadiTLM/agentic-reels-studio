@@ -1,0 +1,180 @@
+{
+  "source": "short.json",
+  "seconds": 19.23,
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "coverFrame": 30,
+  "scenes": [
+    {
+      "type": "hook",
+      "start": 0,
+      "seconds": 3.3,
+      "blocks": {
+        "main": {
+          "fontSize": 79,
+          "lines": [
+            "Sin 2da revisión,",
+            "tu código IA",
+            "frena producción"
+          ]
+        },
+        "footer": {
+          "fontSize": 40,
+          "lines": [
+            "HN + Harvard 2026 · Josué D."
+          ]
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "start": 3.3,
+      "seconds": 4.43,
+      "blocks": {
+        "value": {
+          "fontSize": 251,
+          "lines": [
+            "464"
+          ]
+        },
+        "label": {
+          "fontSize": 57,
+          "lines": [
+            "comentarios en HN",
+            "sobre el cuello de",
+            "botella al revisar código"
+          ]
+        },
+        "footer": {
+          "fontSize": 40,
+          "lines": [
+            "HN + Harvard 2026 · Josué D."
+          ]
+        }
+      }
+    },
+    {
+      "type": "text",
+      "start": 7.73,
+      "seconds": 3.67,
+      "blocks": {
+        "main": {
+          "fontSize": 74,
+          "lines": [
+            "Si el mismo agente",
+            "audita su plan,",
+            "ignora sus fallos"
+          ]
+        },
+        "footer": {
+          "fontSize": 40,
+          "lines": [
+            "HN + Harvard 2026 · Josué D."
+          ]
+        }
+      }
+    },
+    {
+      "type": "item",
+      "start": 11.4,
+      "seconds": 2.77,
+      "blocks": {
+        "rank": {
+          "fontSize": 152,
+          "lines": [
+            "01"
+          ]
+        },
+        "title": {
+          "fontSize": 94,
+          "lines": [
+            "Agente",
+            "Elephant"
+          ]
+        },
+        "body": {
+          "fontSize": 64,
+          "lines": [
+            "Diseña con todo el",
+            "contexto del proyecto"
+          ]
+        },
+        "footer": {
+          "fontSize": 40,
+          "lines": [
+            "HN + Harvard 2026 · Josué D."
+          ]
+        }
+      }
+    },
+    {
+      "type": "item",
+      "start": 14.17,
+      "seconds": 2.97,
+      "blocks": {
+        "rank": {
+          "fontSize": 152,
+          "lines": [
+            "02"
+          ]
+        },
+        "title": {
+          "fontSize": 94,
+          "lines": [
+            "Revisor Goldfish"
+          ]
+        },
+        "body": {
+          "fontSize": 60,
+          "lines": [
+            "Entra sin memoria para",
+            "auditar puntos ciegos"
+          ]
+        },
+        "footer": {
+          "fontSize": 40,
+          "lines": [
+            "HN + Harvard 2026 · Josué D."
+          ]
+        }
+      }
+    },
+    {
+      "type": "end",
+      "start": 17.13,
+      "seconds": 2.1,
+      "blocks": {
+        "main": {
+          "fontSize": 106,
+          "lines": [
+            "Comenta",
+            "EGM"
+          ]
+        },
+        "sub": {
+          "fontSize": 64,
+          "lines": [
+            "y te paso el",
+            "repositorio abierto"
+          ]
+        },
+        "handle": {
+          "fontSize": 52,
+          "lines": [
+            "@saditlm"
+          ]
+        },
+        "footer": {
+          "fontSize": 40,
+          "lines": [
+            "HN + Harvard 2026 · Josué D."
+          ]
+        }
+      }
+    }
+  ],
+  "warnings": [],
+  "video": "short.mp4",
+  "bytes": 2110191
+}

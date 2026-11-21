@@ -1,0 +1,42 @@
+name: Publish Approved Reel (Meta Graph API)
+
+on:
+  workflow_dispatch:
+    inputs:
+      bundle_id:
+        description: 'Folder name inside pipeline/05_ready_to_post/ (e.g. 20261121-harness2-goldfish-reel)'
+        required: true
+        type: string
+      dry_run:
+        description: 'Dry run (verify without posting to Instagram)'
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Verify or publish bundle
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_API_HOST: ${{ vars.IG_API_HOST || 'graph.instagram.com' }}
+          IG_GRAPH_VERSION: ${{ vars.IG_GRAPH_VERSION || 'v25.0' }}
+        run: |
+          BUNDLE="pipeline/05_ready_to_post/${{ inputs.bundle_id }}"
+          python scripts/ig_publish.py verify "$BUNDLE"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python scripts/ig_publish.py publish-reel "$BUNDLE" --dry-run
+          else
+            python scripts/ig_publish.py publish-reel "$BUNDLE"
+          fi

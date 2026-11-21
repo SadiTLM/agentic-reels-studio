@@ -1,0 +1,50 @@
+{
+  "theme": {
+    "bg": "#0E1014",
+    "fg": "#F5F3EE",
+    "accent": "#E05A36",
+    "accentText": "#FFFFFF",
+    "font": "Inter",
+    "uppercase": false
+  },
+  "footer": "HN + Harvard 2026 · Josué D.",
+  "handle": "@saditlm",
+  "scenes": [
+    {
+      "type": "hook",
+      "text": "Sin 2da revisión, tu código IA frena producción",
+      "highlight": "frena producción"
+    },
+    {
+      "type": "stat",
+      "value": "464",
+      "label": "comentarios en HN sobre el cuello de botella al revisar código",
+      "highlight": "revisar código"
+    },
+    {
+      "type": "text",
+      "text": "Si el mismo agente audita su plan, ignora sus fallos",
+      "highlight": "ignora sus fallos"
+    },
+    {
+      "type": "item",
+      "rank": "01",
+      "title": "Agente Elephant",
+      "text": "Diseña con todo el contexto del proyecto",
+      "progress": true
+    },
+    {
+      "type": "item",
+      "rank": "02",
+      "title": "Revisor Goldfish",
+      "text": "Entra sin memoria para auditar puntos ciegos",
+      "progress": true
+    },
+    {
+      "type": "end",
+      "text": "Comenta EGM",
+      "sub": "y te paso el repositorio abierto",
+      "highlight": "EGM"
+    }
+  ]
+}

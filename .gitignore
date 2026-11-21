@@ -1,0 +1,26 @@
+# Dependencies & local runtimes
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.remotion/
+
+# Local secrets & credentials
+.env
+.env.local
+*.token
+*.key
+
+# Build & temporary outputs
+dist/
+out/
+.cache/
+*.log
+*.tmp
+remotion-studio/public/assets/*
+!remotion-studio/public/assets/.gitkeep
+
+# Optional large raw scratch media (rendered outputs go to pipeline/ or site/assets/)
+*.mov
+*.raw
+.DS_Store

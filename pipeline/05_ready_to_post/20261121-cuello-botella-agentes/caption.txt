@@ -1,0 +1,9 @@
+Si tu agente audita su plan, ignora sus propios errores (464 comentarios en Hacker News lo confirman).
+
+Programar con IA es veloz. Revisar codigo, no.
+
+En mi portafolio como Josué D. (SadiTLM) separo dos roles con Elephant-Goldfish Model antes de tocar producción: primero, un agente Elephant diseña la arquitectura con el contexto completo del repositorio, requisitos y decisiones previas; después, un subagente Goldfish arranca sin memoria de esa charla y audita el plan desde cero para exponer puntos ciegos reales en tu automatizacion con agentes ia.
+
+Comenta EGM y te paso el repositorio.
+
+#agentesia #automatizacion #elephantgoldfish #codereview

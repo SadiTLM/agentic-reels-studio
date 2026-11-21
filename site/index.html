@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Josué D. · SadiTLM — Portafolio de Automatización Agéntica</title>
+  <meta name="description" content="Portafolio de Josué D. (SadiTLM): sistemas multi-agente, Harness², Elephant-Goldfish Model y producción automatizada de Reels y contenido técnico.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-row">
+      <a href="#top" class="brand-mark" id="nav-brand">
+        <span class="brand-name">Josué D.</span>
+        <span class="brand-alias">SadiTLM</span>
+      </a>
+      <nav class="nav-links" aria-label="Navegación principal">
+        <a href="#proyectos" id="nav-projects">Proyectos</a>
+        <a href="#videos" id="nav-videos">Videos &amp; Reels</a>
+        <a href="#sistema" id="nav-system">Arquitectura</a>
+        <a href="#contacto" id="nav-contact">Contacto</a>
+      </nav>
+      <a href="#contacto" class="nav-cta" id="nav-cta-btn">Automatizar flujo</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">Ingeniería Agéntica · Portafolio</p>
+          <h1>Sistemas autónomos que investigan, revisan y producen trabajo real.</h1>
+          <p class="hero-lead">
+            Soy <strong>Josué D.</strong> (<strong>SadiTLM</strong>). Diseño flujos multi-agente auditables que conectan investigación de tendencias, revisión de arquitectura sin puntos ciegos y producción de contenido vertical lista para publicar.
+          </p>
+          <div class="hero-actions">
+            <a href="#videos" class="btn btn-primary" id="hero-watch-reels">Ver Reels generados</a>
+            <a href="#proyectos" class="btn btn-secondary" id="hero-explore-projects">Explorar repositorios</a>
+          </div>
+          <div class="hero-metrics">
+            <div>
+              <span class="metric-val" id="metric-projects">3</span>
+              <span class="metric-label">Repositorios integrados</span>
+            </div>
+            <div>
+              <span class="metric-val" id="metric-skills">20</span>
+              <span class="metric-label">Skills agénticas activas</span>
+            </div>
+            <div>
+              <span class="metric-val" id="metric-stages">6 etapas</span>
+              <span class="metric-label">De tendencia a Meta API</span>
+            </div>
+          </div>
+        </div>
+        <figure class="hero-visual">
+          <img src="assets/hero-studio.jpg" alt="Estación de trabajo arquitectónica de Josué D. (SadiTLM) con planos técnicos y lámpara de cobre">
+          <figcaption class="visual-caption">
+            <span>STUDIO // SADITLM</span>
+            <span>Harness² · EGM · Reels Pipeline</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="proyectos">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">01 / Portafolio Técnico</p>
+            <h2>Sistemas y repositorios en producción</h2>
+          </div>
+          <p class="section-desc">
+            Cada proyecto combina código abierto verificable, compuertas de control y ejecución reproducible desde terminal o CI.
+          </p>
+        </div>
+
+        <div class="filter-row" role="tablist" aria-label="Filtrar proyectos" id="project-filters">
+          <button type="button" class="filter-btn active" data-filter="all" id="filter-all">Todos</button>
+          <button type="button" class="filter-btn" data-filter="Optimización Agéntica" id="filter-opt">Optimización Agéntica</button>
+          <button type="button" class="filter-btn" data-filter="Arquitectura & Revisión Spec-Driven" id="filter-arch">Revisión Spec-Driven</button>
+          <button type="button" class="filter-btn" data-filter="Automatización de Contenido & Growth" id="filter-growth">Contenido &amp; Reels</button>
+        </div>
+
+        <div class="projects-grid" id="projects-grid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="videos">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">02 / Videos &amp; Reels</p>
+            <h2>Contenido 9:16 producido por el pipeline</h2>
+          </div>
+          <p class="section-desc">
+            Cada Reel pasa por minería de tendencias, puntuación de ganchos, auditoría Goldfish y render local en 1080×1920 con validación de zonas seguras.
+          </p>
+        </div>
+
+        <div class="reels-layout">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <video id="reel-player" controls playsinline preload="metadata" poster="">
+                <source id="reel-source" src="" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class="reel-details">
+            <div class="reel-selector" id="reel-selector"></div>
+            <div class="reel-spec-box" id="reel-spec-box">
+              <h3 id="reel-title">Cargando Reel...</h3>
+              <p class="section-desc" id="reel-hook"></p>
+
+              <div class="reel-scores">
+                <div>
+                  <span class="score-num" id="reel-hook-score">--</span>
+                  <span class="score-lbl">Hook Score</span>
+                </div>
+                <div>
+                  <span class="score-num" id="reel-goldfish-score">--</span>
+                  <span class="score-lbl">Revisión Goldfish</span>
+                </div>
+                <div>
+                  <span class="score-num" id="reel-duration">--</span>
+                  <span class="score-lbl">Duración 9:16</span>
+                </div>
+              </div>
+
+              <p class="eyebrow" style="margin-bottom: 0.5rem;">Copy humanizado y validado</p>
+              <pre class="caption-preview" id="reel-caption"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="sistema">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">03 / Arquitectura del Sistema</p>
+            <h2>Cómo opera la automatización de punta a punta</h2>
+          </div>
+          <p class="section-desc">
+            Separamos generación, auditoría independiente y aprobación humana para que ningún agente publique ni toque producción a ciegas.
+          </p>
+        </div>
+
+        <div class="arch-grid">
+          <figure class="arch-image">
+            <img src="assets/agentic-layers.jpg" alt="Capas arquitectónicas de verificación agéntica en piedra pizarra y cobre">
+          </figure>
+          <div class="pipeline-steps">
+            <article class="step-item">
+              <span class="step-num">01 / TENDENCIAS</span>
+              <h4>last30days + ig-viral</h4>
+              <p>Detecta conversaciones activas en Hacker News, Reddit, GitHub y nicho con evidencia real.</p>
+            </article>
+            <article class="step-item">
+              <span class="step-num">02 / IDEAS &amp; HOOKS</span>
+              <h4>hookscore.py + beats.py</h4>
+              <p>Aplica 26 fórmulas probadas de gancho y cronometra cada beat hablado antes de renderizar.</p>
+            </article>
+            <article class="step-item">
+              <span class="step-num">03 / GOLDFISH + GATE</span>
+              <h4>Revisión sin sesgos</h4>
+              <p>Un subagente sin historial audita supuestos y exige aprobación explícita antes de producir.</p>
+            </article>
+            <article class="step-item">
+              <span class="step-num">04 / RENDER 9:16</h4>
+              <h4>Remotion + FFmpeg + Pillow</h4>
+              <p>Exporta MP4 H.264/AAC 1080×1920, portada 3:4 y mapa de zonas seguras para Instagram.</p>
+            </article>
+            <article class="step-item">
+              <span class="step-num">05 / COPYS HUMANOS</span>
+              <h4>ig-human + caption.py</h4>
+              <p>Elimina huellas de IA, verifica los 125 caracteres antes del corte y limita a 5 hashtags.</p>
+            </article>
+            <article class="step-item">
+              <span class="step-num">06 / PUBLICACIÓN</h4>
+              <h4>Meta Instagram Graph API</h4>
+              <p>Verifica el paquete y sube por URL pública o subida resumable directa con registro histórico.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contacto">
+      <div class="container contact-grid">
+        <div>
+          <p class="eyebrow">04 / Colaboración</p>
+          <h2 style="font-family: var(--font-display); font-weight: 400; font-size: clamp(2rem, 3.5vw, 2.9rem); margin: 0.35rem 0 1rem; line-height: 1.1;">
+            ¿Quieres implementar un sistema agéntico en tu flujo?
+          </h2>
+          <p class="section-desc" style="margin-bottom: 1.5rem;">
+            Describe qué parte de tu operación, investigación o producción de contenido quieres automatizar. Este formulario genera un brief técnico listo para enviarse por correo o copiarse en JSON.
+          </p>
+          <div class="stack-row">
+            <a href="https://github.com/SadiTLM" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" id="github-profile-btn">GitHub @SadiTLM</a>
+          </div>
+        </div>
+
+        <form class="contact-form" id="brief-form" novalidate>
+          <div class="field-row">
+            <label for="lead-name">
+              Tu nombre
+              <input id="lead-name" name="name" type="text" placeholder="Ej. Andrea López" required>
+            </label>
+            <label for="lead-contact">
+              Correo o @handle
+              <input id="lead-contact" name="contact" type="text" placeholder="andrea@empresa.com" required>
+            </label>
+          </div>
+          <label for="lead-scope">
+            Tipo de automatización
+            <select id="lead-scope" name="scope">
+              <option value="Sistema de Reels & Contenido Automatizado">Sistema de Reels &amp; Contenido Automatizado</option>
+              <option value="Flujo Multi-Agente / Revisión Elephant-Goldfish">Flujo Multi-Agente / Revisión Elephant-Goldfish</option>
+              <option value="Optimización de Agentes con Harness²">Optimización de Agentes con Harness²</option>
+              <option value="Integración API & Automatización a Medida">Integración API &amp; Automatización a Medida</option>
+            </select>
+          </label>
+          <label for="lead-notes">
+            Objetivo y contexto actual
+            <textarea id="lead-notes" name="notes" rows="4" placeholder="Qué proceso te toma más tiempo hoy y qué resultado quieres automatizar..." required></textarea>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="submit-brief-btn">Generar y enviar brief</button>
+            <button type="button" class="btn btn-secondary" id="copy-json-btn">Copiar brief JSON</button>
+          </div>
+          <p class="form-status" id="form-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <span>© <span id="footer-year"></span> Josué D. · SadiTLM — Ingeniería de Sistemas Agénticos</span>
+      <div class="footer-links">
+        <a href="https://github.com/SadiTLM/harness2" target="_blank" rel="noopener noreferrer">Harness²</a>
+        <a href="https://github.com/SadiTLM/elephant-goldfish-model" target="_blank" rel="noopener noreferrer">EGM</a>
+        <a href="https://github.com/SadiTLM/agentic-reels-studio" target="_blank" rel="noopener noreferrer">Reels Studio</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

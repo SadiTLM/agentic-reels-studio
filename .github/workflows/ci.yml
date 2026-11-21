@@ -1,0 +1,27 @@
+name: CI Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime packages
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade pip
+          python -m pip install pillow pytest pyyaml
+      - name: Run pipeline and skill unit tests
+        run: python -m pytest tests/ -v
+      - name: Check pipeline status CLI
+        run: python scripts/studio.py status
