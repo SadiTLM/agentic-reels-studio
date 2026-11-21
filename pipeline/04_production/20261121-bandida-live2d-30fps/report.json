@@ -1,0 +1,55 @@
+{
+  "source": "short.json",
+  "seconds": 13.87,
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "coverFrame": 30,
+  "scenes": [
+    {
+      "type": "visual",
+      "start": 0,
+      "seconds": 1.87,
+      "blocks": {}
+    },
+    {
+      "type": "visual",
+      "start": 1.87,
+      "seconds": 2.1,
+      "blocks": {}
+    },
+    {
+      "type": "visual",
+      "start": 3.97,
+      "seconds": 1.1,
+      "blocks": {}
+    },
+    {
+      "type": "visual",
+      "start": 5.07,
+      "seconds": 3,
+      "blocks": {}
+    },
+    {
+      "type": "visual",
+      "start": 8.07,
+      "seconds": 1.9,
+      "blocks": {}
+    },
+    {
+      "type": "visual",
+      "start": 9.97,
+      "seconds": 1.2,
+      "blocks": {}
+    },
+    {
+      "type": "visual",
+      "start": 11.17,
+      "seconds": 2.7,
+      "blocks": {}
+    }
+  ],
+  "warnings": [],
+  "video": "short.mp4",
+  "bytes": 18218170
+}
