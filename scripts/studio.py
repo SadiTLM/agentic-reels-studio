@@ -378,9 +378,31 @@ def cmd_produce(args: argparse.Namespace) -> int:
     prod_dir.mkdir(parents=True, exist_ok=True)
     short_json_path = prod_dir / "short.json"
 
-    short_spec = idea.get("short_spec", {})
+    short_spec = json.loads(json.dumps(idea.get("short_spec", {})))
     if not short_spec.get("scenes"):
         sys.exit("Error: 'short_spec.scenes' is empty; add scenes before producing.")
+
+    def _resolve_asset(rel_or_abs: str | None) -> str | None:
+        if not rel_or_abs or rel_or_abs.startswith(("http://", "https://")):
+            return rel_or_abs
+        p = Path(rel_or_abs)
+        if p.is_absolute():
+            return str(p)
+        from_root = (ROOT / p).resolve()
+        if from_root.exists():
+            return os.path.relpath(from_root, prod_dir)
+        return rel_or_abs
+
+    if short_spec.get("background"):
+        short_spec["background"] = _resolve_asset(short_spec["background"])
+    if isinstance(short_spec.get("music"), dict) and short_spec["music"].get("src"):
+        short_spec["music"]["src"] = _resolve_asset(short_spec["music"]["src"])
+    if isinstance(short_spec.get("chibi"), dict) and isinstance(short_spec["chibi"].get("poses"), list):
+        short_spec["chibi"]["poses"] = [_resolve_asset(x) for x in short_spec["chibi"]["poses"]]
+    for sc in short_spec.get("scenes", []):
+        if sc.get("image"):
+            sc["image"] = _resolve_asset(sc["image"])
+
     save_json(short_json_path, short_spec)
 
     render_mjs = REMOTION_STUDIO / "render.mjs"
@@ -411,6 +433,45 @@ def cmd_produce(args: argparse.Namespace) -> int:
         mp4_dst = prod_dir / "reel.mp4"
         if mp4_src.exists():
             shutil.move(str(mp4_src), str(mp4_dst))
+
+        # Optional Dual-Export Audio Sync (reel_con_audio.mp4 + reel_sin_sonido.mp4 + AUDIO_SYNC.md)
+        audio_sync_cfg = idea.get("audio_sync") or {}
+        audio_sync_py = ROOT / "scripts" / "audio_sync.py"
+        if audio_sync_cfg.get("song") and audio_sync_py.exists() and mp4_dst.exists():
+            report_path = prod_dir / "report.json"
+            cuts_arg = ""
+            if report_path.exists():
+                rep = load_json(report_path)
+                cuts_arg = ",".join(
+                    f"{sc.get('start', 0)}:{sc.get('type', 'cut')} #{i + 1}"
+                    for i, sc in enumerate(rep.get("scenes", []))
+                )
+            sync_cmd = [
+                "python3", str(audio_sync_py), "dual-export", str(mp4_dst),
+                "--out", str(prod_dir),
+                "--song", str(audio_sync_cfg["song"]),
+                "--artist", str(audio_sync_cfg.get("artist", "")),
+                "--start", str(audio_sync_cfg.get("start_second", 0.0)),
+            ]
+            if audio_sync_cfg.get("bpm"):
+                sync_cmd.extend(["--bpm", str(audio_sync_cfg["bpm"])])
+            if audio_sync_cfg.get("ig_query"):
+                sync_cmd.extend(["--ig-query", str(audio_sync_cfg["ig_query"])])
+            if audio_sync_cfg.get("ref_audio"):
+                ref_p = Path(audio_sync_cfg["ref_audio"])
+                if not ref_p.is_absolute():
+                    ref_p = ROOT / ref_p
+                if ref_p.exists():
+                    sync_cmd.extend(["--audio", str(ref_p)])
+                    if audio_sync_cfg.get("ref_audio_offset_s"):
+                        sync_cmd.extend(["--audio-offset", str(audio_sync_cfg["ref_audio_offset_s"])])
+            if cuts_arg:
+                sync_cmd.extend(["--cuts", cuts_arg])
+            sync_res = subprocess.run(sync_cmd, cwd=str(ROOT), capture_output=True, text=True)
+            print(sync_res.stdout)
+            if sync_res.returncode != 0:
+                print(sync_res.stderr)
+                sys.exit("audio_sync.py dual-export failed.")
 
         # Safe-zone verification via instagram-skill/scripts/reel.py
         reel_py = SKILLS / "instagram-skill" / "scripts" / "reel.py"
@@ -465,6 +526,9 @@ def cmd_produce(args: argparse.Namespace) -> int:
     idea["production"] = {
         "dir": str(prod_dir.relative_to(ROOT)),
         "video": "reel.mp4" if (prod_dir / "reel.mp4").exists() else None,
+        "video_with_audio": "reel_con_audio.mp4" if (prod_dir / "reel_con_audio.mp4").exists() else None,
+        "video_without_audio": "reel_sin_sonido.mp4" if (prod_dir / "reel_sin_sonido.mp4").exists() else None,
+        "audio_sync_guide": "AUDIO_SYNC.md" if (prod_dir / "AUDIO_SYNC.md").exists() else None,
         "cover": "cover.jpg" if (prod_dir / "cover.jpg").exists() else None,
         "sheet": "sheet.jpg" if (prod_dir / "sheet.jpg").exists() else None,
         "zones": "zones.jpg" if (prod_dir / "zones.jpg").exists() else None,
@@ -500,6 +564,7 @@ def cmd_package(args: argparse.Namespace) -> int:
     caption_txt = bundle_dir / "caption.txt"
     caption_txt.write_text(idea.get("caption", "").strip() + "\n", encoding="utf-8")
 
+    audio_sync_meta = load_json(bundle_dir / "audio_sync.json") if (bundle_dir / "audio_sync.json").exists() else None
     manifest = {
         "id": idea["id"],
         "title": idea["title"],
@@ -507,6 +572,10 @@ def cmd_package(args: argparse.Namespace) -> int:
         "project_ref": idea.get("project_ref"),
         "handle": idea.get("handle", "@saditlm"),
         "video_file": "reel.mp4",
+        "video_with_audio": "reel_con_audio.mp4" if (bundle_dir / "reel_con_audio.mp4").exists() else None,
+        "video_without_audio": "reel_sin_sonido.mp4" if (bundle_dir / "reel_sin_sonido.mp4").exists() else None,
+        "audio_sync_guide": "AUDIO_SYNC.md" if (bundle_dir / "AUDIO_SYNC.md").exists() else None,
+        "audio_sync": audio_sync_meta,
         "cover_file": "cover.jpg",
         "caption_file": "caption.txt",
         "caption": idea.get("caption", ""),

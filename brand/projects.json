@@ -50,10 +50,10 @@
       "status": "Activo en Producción",
       "repo": "https://github.com/SadiTLM/agentic-reels-studio",
       "upstream": "SadiTLM",
-      "summary": "Sistema completo de punta a punta: minería de tendencias, ideación con score de hooks, revisión Goldfish, render 9:16 con Remotion/FFmpeg, humanización de copys y publicación vía Meta Graph API.",
+      "summary": "Sistema completo de punta a punta: minería de tendencias, ideación con score de hooks, revisión Goldfish, render 9:16 con Remotion/FFmpeg (partículas, timeline, chibi beat-sync), exportación dual con/sin audio, humanización de copys y publicación vía Meta Graph API.",
       "highlights": [
-        "20 skills especializadas (last30days, ig-reel, ffmpeg/pillow, remotion-shorts, ig-human)",
-        "Renderizado 1080x1920 H.264/AAC local con validación automática de zonas seguras",
+        "21 skills especializadas (last30days, ig-reel, ig-muestras-remixer, remotion-shorts, ig-human)",
+        "Renderizado 1080x1920 H.264/AAC local con validación de zonas seguras y exportación dual (con audio + mudo para IG)",
         "Conector oficial Meta Instagram Graph API (URL pública y subida resumable)"
       ],
       "stack": ["Python 3.11/3.12", "Remotion", "FFmpeg", "Meta Graph API"],

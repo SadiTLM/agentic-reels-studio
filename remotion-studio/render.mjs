@@ -68,14 +68,18 @@ const bring = (src, what) => {
   return `assets/${path.basename(assetsDir)}/${dest}`;
 };
 // Remotion merges the Studio sample's props under these; null every option this file leaves out.
-for (const k of ["theme", "font", "fps", "pace", "bpm", "music", "background", "footer", "handle", "highlightStyle", "progress", "sfx", "sfxVolume"]) {
+for (const k of ["theme", "font", "fps", "pace", "bpm", "music", "background", "backdropDim", "visualMode", "chibi", "footer", "handle", "highlightStyle", "progress", "sfx", "sfxVolume"]) {
   if (!(k in props)) props[k] = null;
 }
+if (flag("--mute")) props.mute = true;
 if (props.music) props.music = { ...props.music, src: bring(props.music.src, "music.src") };
 props.background = bring(props.background, "background");
+if (props.chibi && Array.isArray(props.chibi.poses)) {
+  props.chibi = { ...props.chibi, poses: props.chibi.poses.map((p, i) => bring(p, `chibi.poses[${i}]`)) };
+}
 (props.scenes ?? []).forEach((s, i) => (s.image = bring(s.image, `scenes[${i}].image`)));
 // Keep this short's asset folder to the files it uses now.
-const used = new Set([props.music?.src, props.background, ...(props.scenes ?? []).map((s) => s.image)].filter(Boolean).map((p) => path.basename(p)));
+const used = new Set([props.music?.src, props.background, ...(props.chibi?.poses ?? []), ...(props.scenes ?? []).map((s) => s.image)].filter(Boolean).map((p) => path.basename(p)));
 if (fs.existsSync(assetsDir)) for (const f of fs.readdirSync(assetsDir)) if (!used.has(f)) fs.rmSync(path.join(assetsDir, f), { force: true });
 
 const t0 = Date.now();

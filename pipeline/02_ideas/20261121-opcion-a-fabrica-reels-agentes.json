@@ -1,0 +1,132 @@
+{
+  "id": "20261121-opcion-a-fabrica-reels-agentes",
+  "title": "Opción A: Fábrica agéntica de Reels en 6 etapas (Timeline + Partículas 115 BPM)",
+  "topic": "Visualización en tiempo real del sistema Agentic Reels Studio (SadiTLM)",
+  "format": "reel",
+  "style_option": "A",
+  "project_ref": "agentic-reels-studio",
+  "handle": "@saditlm",
+  "created_at": "2026-11-21T17:04:00Z",
+  "status": "idea",
+  "hooks": [
+    {
+      "text": "Sin 2da revisión, tu guion falla: 6 etapas y 21 skills arman este Reel.",
+      "score": 82.3,
+      "verdict": "STRONG",
+      "weakest": "LENGTH",
+      "flags": []
+    },
+    {
+      "text": "Deja de editar Reels a mano: 6 etapas y 21 skills corren en terminal.",
+      "score": 77.5,
+      "verdict": "STRONG",
+      "weakest": "LENGTH",
+      "flags": []
+    },
+    {
+      "text": "1 comando, 21 skills: sale video con beat y copia muda para IG.",
+      "score": 63.4,
+      "verdict": "OK",
+      "weakest": "ADDRESS",
+      "flags": []
+    }
+  ],
+  "selected_hook_index": 0,
+  "spoken_script": "Deja de editar Reels a mano.\n6 etapas y 21 skills corren en terminal.\nEscaneo tendencias reales.\nGoldfish audita el guion sin memoria.\nRemotion renderiza a 115 BPM y exporta versión muda.\nComenta STUDIO para tus Reels.",
+  "caption": "Deja de editar cada corte a mano: 21 skills y 6 etapas arman video, portada y copy desde la terminal.\n\nSoy Josué D. (SadiTLM). Construí Agentic Reels Studio porque editar 1080x1920 desde cero frenaba cada publicación.\n\nEl flujo real que corre hoy en el repo: investiga temas con last30days, puntúa ganchos, pasa revisión Goldfish sin memoria, renderiza al BPM de tu canción y exporta dos MP4 (uno con audio para verificar cortes y uno mudo para subir con música nativa en Instagram).\n\nComenta STUDIO y te paso el enlace al repositorio de automatizacion con agentes ia.\n\n#agentesia #automatizacion #remotion #pythondev",
+  "keywords": [
+    "agentes ia",
+    "automatizacion",
+    "remotion"
+  ],
+  "audio_sync": {
+    "song": "TAKE ME",
+    "artist": "D A N N Y",
+    "ig_query": "D A N N Y TAKE ME",
+    "start_second": 0.0,
+    "bpm": 115,
+    "reference_sample": "ScreenRecording_11-21-2026 05-52-23_1.MP4 (#36 @cal1star)"
+  },
+  "short_spec": {
+    "theme": {
+      "bg": "#06080D",
+      "fg": "#F5F3EE",
+      "accent": "#E05A36",
+      "accentText": "#FFFFFF",
+      "font": "Inter",
+      "uppercase": false
+    },
+    "visualMode": "timeline",
+    "bpm": 115,
+    "pace": 1.15,
+    "sfx": false,
+    "footer": null,
+    "handle": "@saditlm",
+    "scenes": [
+      {
+        "type": "hook",
+        "big": "06",
+        "text": "Etapas para dejar de editar Reels a mano",
+        "highlight": "a mano"
+      },
+      {
+        "type": "stat",
+        "value": "21",
+        "label": "skills agénticas conectadas en un solo repositorio",
+        "highlight": "skills agénticas"
+      },
+      {
+        "type": "text",
+        "text": "Un agente diseña. Otro sin memoria audita el guion.",
+        "highlight": "sin memoria"
+      },
+      {
+        "type": "text",
+        "text": "Exporta doble: con beat para revisar y mudo para IG.",
+        "highlight": "mudo para IG"
+      },
+      {
+        "type": "end",
+        "text": "Comenta STUDIO",
+        "sub": "y te paso el repositorio abierto",
+        "highlight": "STUDIO"
+      }
+    ]
+  },
+  "goldfish_review": {
+    "status": "reviewed",
+    "score": 90,
+    "verdict": "pass",
+    "notes": "Hechos verificados (21 skills en disco y projects.json, 6 etapas, timeline 115 BPM). hooks[0] corregido (82.3 STRONG), script 13.45s con loop cabe en render 15.1s, fold 101 chars y copy 78.5 PASS; agrega ref_audio al producir.",
+    "reviewed_at": "2026-11-21T17:14:18Z"
+  },
+  "approval": {
+    "approved": false,
+    "approved_by": null,
+    "approved_at": null
+  },
+  "beat_timing": {
+    "total_seconds": 13.45,
+    "total_words": 37,
+    "target_seconds": 15.0,
+    "beats_count": 6,
+    "notes": [
+      "Loops: the last beat repeats \"reels\" from the hook. Second watches are free reach.",
+      "1.5s under target. Either add 4 words or shoot it short. Short is usually right."
+    ]
+  },
+  "copy_audit": {
+    "human_score": 78.5,
+    "human_verdict": "PASS",
+    "caption_verdict": "READY",
+    "caption_chars": 617,
+    "hashtags": [
+      "#agentesia",
+      "#automatizacion",
+      "#remotion",
+      "#pythondev"
+    ],
+    "visible_125": "Deja de editar cada corte a mano: 21 skills y 6 etapas arman video, portada y copy desde la terminal.\n\nSoy Josué D. (SadiTLM)",
+    "audited_at": "2026-11-21T17:12:52Z"
+  }
+}

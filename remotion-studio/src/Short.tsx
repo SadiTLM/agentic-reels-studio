@@ -16,6 +16,7 @@ import {
 import { AFFIX, PUNCH, STAGGER, formatStat, loadFonts, statParts } from "./layout";
 import { FONTS, HEIGHT, LEFT_INSET, SAFE, SAFE_H, SAFE_W, SMALL, WIDTH, resolveTheme } from "./theme";
 import type { Block, Scene, SceneLayout, ShortProps, Theme } from "./types";
+import { ChibiDanceOverlay, ProceduralBackdrop, TimelineHud } from "./VisualModes";
 import { Words, settleFrame } from "./Words";
 
 loadFonts();
@@ -57,12 +58,12 @@ const Ambient: React.FC<{ theme: Theme; seed: string }> = ({ theme, seed }) => {
   );
 };
 
-const Backdrop: React.FC<{ theme: Theme; src?: string | null; frames: number; seed: string }> = ({ theme, src, frames, seed }) => (
+const Backdrop: React.FC<{ theme: Theme; src?: string | null; frames: number; seed: string; dim?: number | null }> = ({ theme, src, frames, seed, dim }) => (
   <AbsoluteFill>
     {src ? (
       <>
         <Media src={src} frames={frames} />
-        <AbsoluteFill style={{ background: theme.bg, opacity: 0.66 }} />
+        <AbsoluteFill style={{ background: theme.bg, opacity: dim ?? 0.66 }} />
       </>
     ) : (
       <Ambient theme={theme} seed={seed} />
@@ -140,7 +141,7 @@ const SceneView: React.FC<SceneProps> = ({ scene, l, theme, first, props, seed }
     case "hook":
     case "text":
       body = (
-        <Safe footer={footer}>
+        <Safe footer={footer} top={Boolean(props.chibi)}>
           {l.blocks.big ? (
             <Rise
               at={tm.lead}
@@ -249,7 +250,7 @@ const SceneView: React.FC<SceneProps> = ({ scene, l, theme, first, props, seed }
     }
     case "end": {
       body = (
-        <Safe footer={footer}>
+        <Safe footer={footer} top={Boolean(props.chibi)}>
           <Words block={l.blocks.main} theme={theme} start={tm.textStart} stagger={tm.st} boxStart={tm.boxStart} highlightStyle={hs} />
           {l.blocks.sub ? (
             <div style={{ marginTop: 36 }}>
@@ -267,9 +268,13 @@ const SceneView: React.FC<SceneProps> = ({ scene, l, theme, first, props, seed }
     }
   }
 
+  const hasProcedural = Boolean(props.visualMode && props.visualMode !== "ambient");
+
   return (
     <AbsoluteFill>
-      {scene.image || !props.background ? <Backdrop theme={theme} src={scene.image} frames={l.frames} seed={seed} /> : null}
+      {scene.image || (!props.background && !hasProcedural) ? (
+        <Backdrop theme={theme} src={scene.image} frames={l.frames} seed={seed} dim={props.backdropDim} />
+      ) : null}
       <AbsoluteFill style={{ transform: `scale(${punch})`, transformOrigin: scene.type === "item" || scene.type === "quote" ? ORIGIN_LEFT : ORIGIN_CENTER }}>
         {body}
       </AbsoluteFill>
@@ -342,14 +347,26 @@ export const Short: React.FC<ShortProps & { guides?: boolean; mute?: boolean }> 
   const layout = props.layout ?? [];
   const music = props.music;
   const seed = props.scenes.map((s) => s.text ?? s.title ?? s.label ?? "").join("|");
+  const effectiveBpm = props.bpm ?? props.chibi?.bpm ?? 120;
   return (
     <AbsoluteFill style={{ background: theme.bg, width: WIDTH, height: HEIGHT }}>
-      {props.background ? <Backdrop theme={theme} src={props.background} frames={durationInFrames} seed={seed} /> : null}
+      {props.visualMode && props.visualMode !== "ambient" ? (
+        <ProceduralBackdrop mode={props.visualMode} theme={theme} bpm={effectiveBpm} seed={seed} />
+      ) : null}
+      {props.background ? (
+        <Backdrop theme={theme} src={props.background} frames={durationInFrames} seed={seed} dim={props.backdropDim} />
+      ) : null}
       {layout.map((l, i) => (
         <Sequence key={i} from={l.from} durationInFrames={l.frames} name={`${i + 1} ${props.scenes[i].type}`}>
           <SceneView scene={props.scenes[i]} l={l} theme={theme} first={i === 0} props={props} seed={`${seed}-${i}`} />
         </Sequence>
       ))}
+      {props.chibi ? (
+        <ChibiDanceOverlay chibi={props.chibi} layout={layout} bpm={effectiveBpm} accent={theme.accent} />
+      ) : null}
+      {props.visualMode === "timeline" ? (
+        <TimelineHud layout={layout} theme={theme} bpm={effectiveBpm} />
+      ) : null}
       {!props.mute ? <Sfx props={props} layout={layout} /> : null}
       {music && !props.mute ? (
         <Html5Audio

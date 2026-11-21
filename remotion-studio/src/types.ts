@@ -50,6 +50,25 @@ export type SceneLayout = {
   blocks: Record<string, Block>;
 };
 
+export type VisualMode = "ambient" | "particles" | "ellipse" | "timeline";
+
+export type ChibiConfig = {
+  /** Array of local transparent PNG pose paths (relative to short.json). */
+  poses: string[];
+  /** Horizontal anchor as fraction of width (0..1, default 0.5). */
+  x?: number;
+  /** Feet baseline vertical anchor as fraction of height (0..1, default 0.72). */
+  y?: number;
+  /** Character scale multiplier (default 1.0). */
+  scale?: number;
+  /** Optional dance BPM override (defaults to top-level bpm or 148). */
+  bpm?: number;
+  /** Render ground shadow & wet floor reflection (default true). */
+  shadow?: boolean;
+  /** 0-based scene index that triggers the final 'bang!' pose + impact VFX. */
+  bangScene?: number;
+};
+
 export type ShortProps = {
   theme?: string | Partial<Theme> | null;
   font?: FontName | null;
@@ -61,6 +80,12 @@ export type ShortProps = {
   music?: { src: string; volume?: number; start?: number } | null;
   /** Photo or looping video behind every scene. */
   background?: string | null;
+  /** Dim opacity applied over photo/video backdrops (0..0.9, default 0.66). */
+  backdropDim?: number | null;
+  /** Procedural Option A visual engine: ambient (default), particles, ellipse, or timeline. */
+  visualMode?: VisualMode | null;
+  /** Option B beat-synced chibi/anime dance overlay configuration. */
+  chibi?: ChibiConfig | null;
   /** Small credit line, e.g. "Data: USGS". */
   footer?: string | null;
   /** Shown on the end scene, e.g. "@yourhandle". */

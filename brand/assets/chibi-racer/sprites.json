@@ -1,0 +1,16 @@
+{
+  "source_sheet": "/home/antigravity/.gemini/jetski/brain/v1/default/jetski_remote_agents_3p_devbox/a06b18a8-ee6a-4a1f-a522-afa0915d704c/chibi_dance_sheet_1795280270260.jpg",
+  "cols": 2,
+  "rows": 2,
+  "canvas_size": [
+    356,
+    506
+  ],
+  "poses": [
+    "pose_01.png",
+    "pose_02.png",
+    "pose_03.png",
+    "pose_04.png"
+  ],
+  "preview": "poses_preview.jpg"
+}
