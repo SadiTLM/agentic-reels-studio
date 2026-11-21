@@ -1,0 +1,44 @@
+{
+  "song": "9mm",
+  "artist": "Memphis Cult, Groove Dealers, SPLYXER",
+  "instagram_audio_search": "Memphis Cult 9mm",
+  "start_second": 0.0,
+  "start_timestamp": "0:00",
+  "bpm": 155.0,
+  "video_duration_s": 13.87,
+  "files": {
+    "preview_with_audio": "reel_con_audio.mp4",
+    "upload_without_audio": "reel_sin_sonido.mp4"
+  },
+  "reference_audio_used": "ref35_audio.mp3",
+  "cuts": [
+    {
+      "at": 0.0,
+      "label": "visual #1"
+    },
+    {
+      "at": 1.87,
+      "label": "visual #2"
+    },
+    {
+      "at": 3.97,
+      "label": "visual #3"
+    },
+    {
+      "at": 5.07,
+      "label": "visual #4"
+    },
+    {
+      "at": 8.07,
+      "label": "visual #5"
+    },
+    {
+      "at": 9.97,
+      "label": "visual #6"
+    },
+    {
+      "at": 11.17,
+      "label": "visual #7"
+    }
+  ]
+}

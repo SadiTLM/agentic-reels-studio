@@ -107,6 +107,52 @@ def remove_bg_floodfill(
     return rgba
 
 
+def remove_trapped_white_holes(rgba: Image.Image) -> Image.Image:
+    """Clear pure-white background pockets trapped inside hair strands/limbs while protecting face & shirt core."""
+    w, h = rgba.size
+    bbox = rgba.getbbox()
+    if not bbox:
+        return rgba
+    px = rgba.load()
+    bx0, by0, bx1, by1 = bbox
+    bw, bh = bx1 - bx0, by1 - by0
+    prot_x0, prot_x1 = bx0 + bw * 0.34, bx0 + bw * 0.66
+    prot_y0, prot_y1 = by0 + bh * 0.18, by0 + bh * 0.57
+    visited = bytearray(w * h)
+    to_clear: list[tuple[int, int]] = []
+    for y in range(by0, by1):
+        for x in range(bx0, bx1):
+            idx = y * w + x
+            if visited[idx]:
+                continue
+            r, g, b, a = px[x, y]
+            if a > 200 and r >= 246 and g >= 246 and b >= 246:
+                q: collections.deque[tuple[int, int]] = collections.deque([(x, y)])
+                visited[idx] = 1
+                comp = []
+                in_prot = False
+                while q:
+                    cx, cy = q.popleft()
+                    comp.append((cx, cy))
+                    if prot_x0 <= cx <= prot_x1 and prot_y0 <= cy <= prot_y1:
+                        in_prot = True
+                    for nx, ny in ((cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1)):
+                        if bx0 <= nx < bx1 and by0 <= ny < by1:
+                            nidx = ny * w + nx
+                            if not visited[nidx]:
+                                nr, ng, nb, na = px[nx, ny]
+                                if na > 150 and nr >= 238 and ng >= 238 and nb >= 238:
+                                    visited[nidx] = 1
+                                    q.append((nx, ny))
+                if not in_prot and len(comp) >= 12:
+                    to_clear.extend(comp)
+    clear_set = set(to_clear)
+    for cx, cy in clear_set:
+        r, g, b, _ = px[cx, cy]
+        px[cx, cy] = (r, g, b, 0)
+    return rgba
+
+
 def trim_and_pad(rgba: Image.Image, pad: int = 12) -> Image.Image:
     bbox = rgba.getbbox()
     if not bbox:
@@ -162,6 +208,8 @@ def cmd_split_sheet(args: argparse.Namespace) -> int:
                     cell = cell.crop((ix, iy, cell.width - ix, cell.height - iy))
                 if args.remove_bg:
                     cell = remove_bg_floodfill(cell, bg_mode=args.bg, tolerance=args.tolerance)
+                    if args.bg in ("auto", "white"):
+                        cell = remove_trapped_white_holes(cell)
                     cell = trim_and_pad(cell, pad=10)
                 else:
                     cell = cell.convert("RGBA")

@@ -1,0 +1,23 @@
+{
+  "character": "Bandida Bella (uniforme escolar + mochila + corbata)",
+  "canvas_size": [
+    378,
+    534
+  ],
+  "poses": [
+    "pose_01.png",
+    "pose_02.png",
+    "pose_03.png",
+    "pose_04.png",
+    "pose_05.png",
+    "pose_06.png",
+    "pose_07.png",
+    "pose_08.png",
+    "pose_09.png",
+    "pose_10.png",
+    "pose_11.png",
+    "pose_12.png"
+  ],
+  "bang_pose": "pose_12.png",
+  "preview": "poses_preview.jpg"
+}

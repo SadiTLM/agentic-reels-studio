@@ -1,0 +1,149 @@
+{
+  "theme": {
+    "bg": "#06080D",
+    "fg": "#FFFFFF",
+    "accent": "#E03E52",
+    "accentText": "#FFFFFF",
+    "font": "Inter",
+    "uppercase": false
+  },
+  "bpm": 155,
+  "exactTiming": true,
+  "backdropDim": 0,
+  "sfx": false,
+  "watermark": "saditlm",
+  "footer": null,
+  "handle": null,
+  "glitch": {
+    "intensity": 0.8,
+    "scanlines": true,
+    "grain": true
+  },
+  "chibi": {
+    "poses": [
+      "../../../brand/assets/chibi-bandida/pose_01.png",
+      "../../../brand/assets/chibi-bandida/pose_02.png",
+      "../../../brand/assets/chibi-bandida/pose_03.png",
+      "../../../brand/assets/chibi-bandida/pose_04.png",
+      "../../../brand/assets/chibi-bandida/pose_05.png",
+      "../../../brand/assets/chibi-bandida/pose_06.png",
+      "../../../brand/assets/chibi-bandida/pose_07.png",
+      "../../../brand/assets/chibi-bandida/pose_08.png",
+      "../../../brand/assets/chibi-bandida/pose_09.png",
+      "../../../brand/assets/chibi-bandida/pose_10.png",
+      "../../../brand/assets/chibi-bandida/pose_11.png",
+      "../../../brand/assets/chibi-bandida/pose_12.png"
+    ],
+    "x": 0.5,
+    "y": 0.76,
+    "scale": 0.96,
+    "bpm": 155,
+    "poseRate": 2,
+    "nightGrade": true,
+    "shadow": true,
+    "bangScenes": [
+      2,
+      5
+    ]
+  },
+  "scenes": [
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/porsche-gt3-rain.jpg",
+      "seconds": 1.85,
+      "zoomFrom": 1.07,
+      "zoomTo": 1.13,
+      "panX": 24,
+      "chibiX": 0.5,
+      "chibiY": 0.77,
+      "chibiScale": 0.95,
+      "chibiBrightness": 0.85,
+      "sceneTint": "rgba(255, 190, 120, 0.24)",
+      "rimColor": "rgba(255, 175, 110, 0.28)"
+    },
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/neon-alley-coupe.jpg",
+      "seconds": 2.1,
+      "zoomFrom": 1.11,
+      "zoomTo": 1.03,
+      "panX": -28,
+      "chibiX": 0.55,
+      "chibiY": 0.75,
+      "chibiScale": 0.98,
+      "chibiBrightness": 0.8,
+      "sceneTint": "rgba(42, 210, 230, 0.26)",
+      "rimColor": "rgba(0, 230, 255, 0.30)"
+    },
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/ferrari-crimson-dock.jpg",
+      "seconds": 1.1,
+      "zoomFrom": 1.14,
+      "zoomTo": 1.05,
+      "panX": 0,
+      "chibiX": 0.54,
+      "chibiY": 0.76,
+      "chibiScale": 1.04,
+      "chibiBrightness": 0.83,
+      "sceneTint": "rgba(255, 95, 70, 0.28)",
+      "rimColor": "rgba(255, 90, 80, 0.34)"
+    },
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/skyline-overpass.jpg",
+      "seconds": 3.0,
+      "zoomFrom": 1.04,
+      "zoomTo": 1.12,
+      "panX": 30,
+      "chibiX": 0.47,
+      "chibiY": 0.76,
+      "chibiScale": 0.97,
+      "chibiBrightness": 0.81,
+      "sceneTint": "rgba(90, 165, 200, 0.25)",
+      "rimColor": "rgba(255, 145, 75, 0.26)"
+    },
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/porsche-gt3-rain.jpg",
+      "seconds": 1.9,
+      "zoomFrom": 1.13,
+      "zoomTo": 1.04,
+      "panX": -26,
+      "chibiX": 0.52,
+      "chibiY": 0.77,
+      "chibiScale": 1.0,
+      "chibiBrightness": 0.85,
+      "sceneTint": "rgba(255, 190, 120, 0.24)",
+      "rimColor": "rgba(255, 175, 110, 0.28)"
+    },
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/neon-alley-coupe.jpg",
+      "seconds": 1.2,
+      "zoomFrom": 1.15,
+      "zoomTo": 1.06,
+      "panX": 0,
+      "chibiX": 0.54,
+      "chibiY": 0.75,
+      "chibiScale": 1.06,
+      "chibiBrightness": 0.8,
+      "sceneTint": "rgba(42, 210, 230, 0.28)",
+      "rimColor": "rgba(0, 235, 255, 0.32)"
+    },
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/ferrari-crimson-dock.jpg",
+      "seconds": 2.7,
+      "zoomFrom": 1.05,
+      "zoomTo": 1.13,
+      "panX": -22,
+      "chibiX": 0.5,
+      "chibiY": 0.77,
+      "chibiScale": 0.99,
+      "chibiBrightness": 0.83,
+      "sceneTint": "rgba(255, 95, 70, 0.25)",
+      "rimColor": "rgba(255, 90, 80, 0.30)"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Img, OffthreadVideo, interpolate, random, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { HEIGHT, SAFE, SMALL, WIDTH } from "./theme";
-import type { ChibiConfig, Scene, SceneLayout, Theme, VisualMode } from "./types";
+import type { ChibiConfig, GlitchConfig, Scene, SceneLayout, Theme, VisualMode } from "./types";
 
 const CLAMP = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
@@ -376,9 +376,11 @@ export const SubtleWatermark: React.FC<{ text: string }> = ({ text }) => (
 );
 
 /**
- * Option B: Beat-Synced Chibi / Anime Sprite Dance Overlay
- * Inspired by @shotbykusa (#35 "Watch my 9mm go, bang!"), @sinnerm3 (#33), @d2_shots (#34).
- * Supports multiple bangScenes, per-scene positioning, wet-asphalt reflection, and cracked-glass VFX.
+ * Option B: Fluid Night-Integrated Chibi Dance Overlay
+ * - Double-time 8-12 pose progression with motion-blur crossfade ghosting between poses
+ * - Continuous multi-axis dance physics (horizontal groove glide, eased hop, hip skew, camera-locked bass pump)
+ * - Seamless night-atmosphere color integration (per-scene brightness/tint, soft optical focus, neon rim-light wrap)
+ * - Synchronized RGB glitch ghosts on cuts/beats + cracked-glass bullet impact VFX on bangScenes
  */
 export const ChibiDanceOverlay: React.FC<{
   chibi: ChibiConfig;
@@ -393,10 +395,11 @@ export const ChibiDanceOverlay: React.FC<{
   if (!poses.length) return null;
 
   const effectiveBpm = chibi.bpm ?? bpm ?? 155;
-  const { beatIndex, phase, hit } = beatMetrics(frame, fps, effectiveBpm);
+  const { beats, beatIndex, phase, hit } = beatMetrics(frame, fps, effectiveBpm);
 
   const sceneIdx = Math.max(0, layout.findIndex((l) => frame >= l.from && frame < l.from + l.frames));
   const curScene = scenes[sceneIdx];
+  const sceneAge = layout[sceneIdx] ? frame - layout[sceneIdx].from : 0;
   const bangSet = new Set<number>([
     ...(chibi.bangScene != null ? [chibi.bangScene] : []),
     ...(chibi.bangScenes ?? []),
@@ -405,27 +408,72 @@ export const ChibiDanceOverlay: React.FC<{
   const bangStart = isBangScene && layout[sceneIdx] ? layout[sceneIdx].from : -999;
   const bangAge = frame - bangStart;
 
-  // Cycle dance poses on every beat, lock to finger-gun pose (last pose) during any bangScene
+  // Fluid pose progression: 2x per beat when >=8 poses are provided (~5.2 poses/sec at 155 BPM)
   const danceCount = poses.length > 1 && bangSet.size > 0 ? poses.length - 1 : poses.length;
-  const poseSrc = isBangScene ? poses[poses.length - 1] : poses[beatIndex % danceCount];
+  const poseRate = chibi.poseRate ?? (danceCount >= 8 ? 2 : 1);
+  const stepFloat = beats * poseRate;
+  const stepIndex = Math.floor(stepFloat);
+  const stepPhase = stepFloat - stepIndex;
 
-  // Snappy anime bounce + squash & stretch synced to BPM
-  const hop = Math.sin(phase * Math.PI) * (isBangScene ? 10 : 30);
-  const squashX = 1 + hit * 0.07;
-  const squashY = 1 - hit * 0.06;
-  const swayDeg = isBangScene ? -3.0 : (beatIndex % 2 === 0 ? 1 : -1) * (4.8 * Math.sin(phase * Math.PI));
+  const poseSrc = isBangScene ? poses[poses.length - 1] : poses[stepIndex % danceCount];
+  const prevPoseSrc = isBangScene
+    ? poses[(Math.max(0, stepIndex - 1)) % danceCount]
+    : poses[(stepIndex - 1 + danceCount) % danceCount];
+
+  // Brief motion-blur smear crossfade on pose switch (melts consecutive poses smoothly)
+  const crossfadeOp = !isBangScene && stepPhase < 0.34 ? interpolate(stepPhase, [0, 0.34], [0.32, 0], CLAMP) : 0;
+
+  // Continuous multi-axis dance physics locked to the camera's BPM pulse
+  const hop = isBangScene
+    ? Math.sin(phase * Math.PI) * 9
+    : Math.pow(Math.abs(Math.sin(phase * Math.PI)), 0.72) * 26;
+  const grooveX = isBangScene ? 0 : Math.sin(beats * Math.PI * 0.5) * 34;
+  const squashX = 1 + hit * 0.052;
+  const squashY = 1 - hit * 0.044;
+  const cameraBassPump = 1 + hit * 0.022;
+  const swayDeg = isBangScene ? -3.4 : Math.sin(beats * Math.PI * 0.5) * 4.4;
+  const skewDeg = isBangScene ? 0 : Math.cos(beats * Math.PI) * 2.8;
+
+  // Recoil shake locked to camera on bang hits
+  const shakeDecay = isBangScene ? Math.exp(-Math.max(0, bangAge) * 0.36) * (bangAge < 10 ? 1 : 0) : 0;
+  const shakeX = isBangScene ? Math.sin(bangAge * 2.7) * 18 * shakeDecay : 0;
+  const shakeY = isBangScene ? Math.cos(bangAge * 3.4) * 12 * shakeDecay : 0;
+
   const bangPop = isBangScene
-    ? 1 + 0.16 * Math.exp(-Math.max(0, bangAge) * 0.24) * spring({ frame: bangAge, fps, config: { damping: 14, stiffness: 280 } })
+    ? 1 + 0.15 * Math.exp(-Math.max(0, bangAge) * 0.24) * spring({ frame: bangAge, fps, config: { damping: 14, stiffness: 280 } })
     : 1;
 
-  const cx = (curScene?.chibiX ?? chibi.x ?? 0.5) * WIDTH;
-  const bottomY = (curScene?.chibiY ?? chibi.y ?? 0.77) * HEIGHT;
+  // Rhythmic RGB glitch tear ON the character itself during cuts, bangs, and micro-glitch beats
+  const microGlitch = !isBangScene && (beatIndex % 4 === 3) && phase < 0.22;
+  const chibiRgbShift =
+    sceneIdx > 0 && sceneAge < 6
+      ? interpolate(sceneAge, [0, 6], [18, 0], CLAMP)
+      : isBangScene && bangAge < 7
+        ? interpolate(bangAge, [0, 7], [16, 0], CLAMP)
+        : microGlitch
+          ? 8 * Math.sin(frame * 3.1)
+          : 0;
+  const glitchJitterX = Math.abs(chibiRgbShift) > 3 ? Math.sin(frame * 7.3) * 6 : 0;
+
+  const cx = (curScene?.chibiX ?? chibi.x ?? 0.5) * WIDTH + grooveX + shakeX + glitchJitterX;
+  const bottomY = (curScene?.chibiY ?? chibi.y ?? 0.76) * HEIGHT + shakeY;
   const spriteH = Math.round(520 * (curScene?.chibiScale ?? chibi.scale ?? 1));
   const showShadow = chibi.shadow !== false;
 
-  // Cracked-glass bullet-hole impact + spark burst on bang hit (persists briefly like #35 @ 4.2s)
-  const flashOp = isBangScene ? interpolate(bangAge, [0, 2, 10], [0.32, 0.18, 0], CLAMP) : 0;
-  const crackOp = isBangScene ? interpolate(bangAge, [0, 2, 22, 32], [0.95, 0.92, 0.72, 0], CLAMP) : 0;
+  // Seamless Night-Atmosphere Color Grading & Optical Integration (eliminates harsh pasted contrast)
+  const nightGrade = chibi.nightGrade !== false;
+  const bright = curScene?.chibiBrightness ?? (nightGrade ? 0.83 : 1.0);
+  const rimColor = curScene?.rimColor ?? "rgba(255, 130, 80, 0.38)";
+  const sceneTint = curScene?.sceneTint ?? "rgba(32, 68, 92, 0.22)";
+  const spriteFilter = nightGrade
+    ? `brightness(${bright.toFixed(2)}) contrast(0.95) saturate(0.90) blur(0.45px) drop-shadow(0 0 8px ${rimColor}) drop-shadow(0 12px 18px rgba(0,0,0,0.72))`
+    : "drop-shadow(0 14px 22px rgba(0,0,0,0.62))";
+
+  const transformMain = `translate(-50%, -100%) scale(${(squashX * bangPop * cameraBassPump).toFixed(4)}, ${(squashY * bangPop * cameraBassPump).toFixed(4)}) rotate(${swayDeg.toFixed(2)}deg) skewX(${skewDeg.toFixed(2)}deg)`;
+
+  // Cracked-glass bullet-hole impact + warm muzzle spark on bang hits
+  const flashOp = isBangScene ? interpolate(bangAge, [0, 2, 10], [0.3, 0.16, 0], CLAMP) : 0;
+  const crackOp = isBangScene ? interpolate(bangAge, [0, 2, 22, 32], [0.92, 0.88, 0.68, 0], CLAMP) : 0;
   const crackScale = isBangScene ? interpolate(bangAge, [0, 4, 18], [0.55, 1.08, 1.18], CLAMP) : 0.55;
   const burstX = cx - spriteH * 0.42;
   const burstY = bottomY - spriteH * 0.64;
@@ -436,32 +484,25 @@ export const ChibiDanceOverlay: React.FC<{
       {flashOp > 0.01 ? (
         <AbsoluteFill
           style={{
-            background: "radial-gradient(circle at 38% 58%, rgba(255,244,220,0.85) 0%, rgba(255,140,80,0.22) 45%, rgba(0,0,0,0) 75%)",
+            background: "radial-gradient(circle at 38% 58%, rgba(255,240,210,0.8) 0%, rgba(255,120,70,0.22) 45%, rgba(0,0,0,0) 75%)",
             opacity: flashOp,
           }}
         />
       ) : null}
 
-      {/* Cracked glass bullet-hole + radial spark shatter VFX (signature #35 @4.2s effect) */}
+      {/* Cracked glass bullet-hole + radial spark shatter VFX */}
       {crackOp > 0.01 ? (
-        <svg
-          width={WIDTH}
-          height={HEIGHT}
-          viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-          style={{ position: "absolute", inset: 0, opacity: crackOp }}
-        >
+        <svg width={WIDTH} height={HEIGHT} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} style={{ position: "absolute", inset: 0, opacity: crackOp }}>
           <g transform={`translate(${burstX}, ${burstY}) scale(${crackScale})`}>
-            {/* Concentric glass fracture rings */}
-            <circle cx={0} cy={0} r={22} fill="rgba(255,255,255,0.88)" />
-            <circle cx={0} cy={0} r={44} fill="none" stroke="rgba(255,255,255,0.82)" strokeWidth={3.5} strokeDasharray="16 8" />
-            <circle cx={0} cy={0} r={82} fill="none" stroke="rgba(230,245,255,0.58)" strokeWidth={2} strokeDasharray="24 14" />
-            <circle cx={0} cy={0} r={126} fill="none" stroke="rgba(255,255,255,0.34)" strokeWidth={1.5} strokeDasharray="18 22" />
-            {/* Radial jagged glass crack rays */}
+            <circle cx={0} cy={0} r={20} fill="rgba(255,255,255,0.85)" />
+            <circle cx={0} cy={0} r={42} fill="none" stroke="rgba(255,255,255,0.78)" strokeWidth={3.2} strokeDasharray="16 8" />
+            <circle cx={0} cy={0} r={80} fill="none" stroke="rgba(180,235,255,0.55)" strokeWidth={2} strokeDasharray="24 14" />
+            <circle cx={0} cy={0} r={124} fill="none" stroke="rgba(255,255,255,0.32)" strokeWidth={1.5} strokeDasharray="18 22" />
             {Array.from({ length: 16 }, (_, i) => {
               const ang = (i / 16) * Math.PI * 2 + (i % 3) * 0.07;
-              const r1 = 16;
-              const rMid = 62 + (i % 3) * 18;
-              const r2 = i % 2 === 0 ? 168 : 112;
+              const r1 = 15;
+              const rMid = 60 + (i % 3) * 18;
+              const r2 = i % 2 === 0 ? 164 : 108;
               const mx = Math.cos(ang + 0.08) * rMid;
               const my = Math.sin(ang + 0.08) * rMid;
               return (
@@ -470,8 +511,8 @@ export const ChibiDanceOverlay: React.FC<{
                   points={`${(Math.cos(ang) * r1).toFixed(1)},${(Math.sin(ang) * r1).toFixed(1)} ${mx.toFixed(1)},${my.toFixed(1)} ${(Math.cos(ang) * r2).toFixed(1)},${(Math.sin(ang) * r2).toFixed(1)}`}
                   fill="none"
                   stroke={i % 4 === 0 ? accent : "#FFFFFF"}
-                  strokeWidth={i % 2 === 0 ? 3.2 : 1.8}
-                  strokeOpacity={i % 2 === 0 ? 0.9 : 0.65}
+                  strokeWidth={i % 2 === 0 ? 3 : 1.7}
+                  strokeOpacity={i % 2 === 0 ? 0.88 : 0.62}
                   strokeLinecap="round"
                 />
               );
@@ -480,18 +521,18 @@ export const ChibiDanceOverlay: React.FC<{
         </svg>
       ) : null}
 
-      {/* Ground contact shadow + glossy wet-asphalt reflection */}
+      {/* Ground contact shadow + atmospheric wet-asphalt reflection */}
       {showShadow ? (
         <>
           <div
             style={{
               position: "absolute",
-              left: cx - spriteH * 0.28,
+              left: cx - spriteH * 0.3,
               top: bottomY - 16,
-              width: spriteH * 0.56,
-              height: 36,
+              width: spriteH * 0.6,
+              height: 40,
               borderRadius: "50%",
-              background: "radial-gradient(ellipse at center, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0) 74%)",
+              background: "radial-gradient(ellipse at center, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0) 74%)",
               transform: `scale(${1 - hop / 180})`,
             }}
           />
@@ -501,12 +542,12 @@ export const ChibiDanceOverlay: React.FC<{
               left: cx,
               top: bottomY - 6,
               height: spriteH,
-              transform: `translate(-50%, 0) scaleY(-0.58) scaleX(${squashX * bangPop}) rotate(${swayDeg}deg)`,
+              transform: `translate(-50%, 0) scaleY(-0.56) scaleX(${(squashX * bangPop * cameraBassPump).toFixed(4)}) rotate(${swayDeg.toFixed(2)}deg)`,
               transformOrigin: "top center",
-              opacity: 0.26,
-              filter: "blur(3.5px)",
-              maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.92), rgba(0,0,0,0) 70%)",
-              WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.92), rgba(0,0,0,0) 70%)",
+              opacity: 0.24,
+              filter: `brightness(0.75) blur(4px) drop-shadow(0 0 10px ${rimColor})`,
+              maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0) 68%)",
+              WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0) 68%)",
             }}
           >
             <Img src={staticFile(poseSrc)} style={{ height: spriteH, width: "auto", display: "block" }} />
@@ -514,19 +555,233 @@ export const ChibiDanceOverlay: React.FC<{
         </>
       ) : null}
 
-      {/* Main animated chibi character sprite */}
+      {/* Motion-blur ghost of previous pose for silky anime fluid transition */}
+      {crossfadeOp > 0.02 ? (
+        <div
+          style={{
+            position: "absolute",
+            left: cx - Math.cos(beats * Math.PI * 0.5) * 6,
+            top: bottomY - hop,
+            transform: transformMain,
+            transformOrigin: "bottom center",
+            opacity: crossfadeOp,
+            filter: `brightness(${bright.toFixed(2)}) blur(2.2px)`,
+          }}
+        >
+          <Img src={staticFile(prevPoseSrc)} style={{ height: spriteH, width: "auto", display: "block" }} />
+        </div>
+      ) : null}
+
+      {/* RGB chromatic glitch ghosts ON the character during cuts/beats/bangs */}
+      {Math.abs(chibiRgbShift) > 0.8 ? (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              left: cx - chibiRgbShift,
+              top: bottomY - hop,
+              transform: transformMain,
+              transformOrigin: "bottom center",
+              opacity: 0.42,
+              mixBlendMode: "screen",
+              filter: "hue-rotate(-40deg) saturate(2.2) blur(1px)",
+            }}
+          >
+            <Img src={staticFile(poseSrc)} style={{ height: spriteH, width: "auto", display: "block" }} />
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              left: cx + chibiRgbShift,
+              top: bottomY - hop,
+              transform: transformMain,
+              transformOrigin: "bottom center",
+              opacity: 0.42,
+              mixBlendMode: "screen",
+              filter: "hue-rotate(145deg) saturate(2.2) blur(1px)",
+            }}
+          >
+            <Img src={staticFile(poseSrc)} style={{ height: spriteH, width: "auto", display: "block" }} />
+          </div>
+        </>
+      ) : null}
+
+      {/* Main night-graded animated character sprite */}
       <div
         style={{
           position: "absolute",
           left: cx,
           top: bottomY - hop,
-          transform: `translate(-50%, -100%) scale(${squashX * bangPop}, ${squashY * bangPop}) rotate(${swayDeg}deg)`,
+          transform: transformMain,
           transformOrigin: "bottom center",
-          filter: "drop-shadow(0 14px 22px rgba(0,0,0,0.62))",
+          filter: spriteFilter,
         }}
       >
         <Img src={staticFile(poseSrc)} style={{ height: spriteH, width: "auto", display: "block" }} />
       </div>
+
+      {/* Subtle ambient street-light color spill wrapping her lower body into the scene */}
+      {nightGrade ? (
+        <div
+          style={{
+            position: "absolute",
+            left: cx - spriteH * 0.45,
+            top: bottomY - spriteH * 0.95,
+            width: spriteH * 0.9,
+            height: spriteH * 0.95,
+            background: `radial-gradient(ellipse at 50% 62%, ${sceneTint} 0%, rgba(0,0,0,0) 72%)`,
+            mixBlendMode: "soft-light",
+          }}
+        />
+      ) : null}
+    </AbsoluteFill>
+  );
+};
+
+/**
+ * Unified Cyber-Glitch, Databug, Scanlines, Film Grain & Cinema Grade Post-FX Layer.
+ * Applied OVER BOTH the supercar background and the anime chibi together so both worlds
+ * share identical optical grain, RGB signal tears, digital bug artifacts, and color cohesion.
+ */
+export const GlitchPostFX: React.FC<{
+  config: GlitchConfig;
+  layout: SceneLayout[];
+  bangScenes: number[];
+  bpm: number;
+  accent: string;
+}> = ({ config, layout, bangScenes, bpm, accent }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const intensity = Math.min(1, Math.max(0, config.intensity ?? 0.68));
+  const { beatIndex, phase, hit } = beatMetrics(frame, fps, bpm);
+
+  const sceneIdx = Math.max(0, layout.findIndex((l) => frame >= l.from && frame < l.from + l.frames));
+  const sceneAge = layout[sceneIdx] ? frame - layout[sceneIdx].from : 0;
+  const isBang = bangScenes.includes(sceneIdx) && sceneAge < 11;
+  const isCut = sceneIdx > 0 && sceneAge < 6;
+  const isBeatBug = beatIndex % 4 === 3 && phase < 0.22;
+  const isMicroFlicker = random(`gtrig-${Math.floor(frame / 2)}`) > 0.89;
+
+  const glitchActive = (isBang || isCut || isBeatBug || isMicroFlicker) && intensity > 0.05;
+  const burstStrength = isBang ? 1.0 : isCut ? 0.92 : isBeatBug ? 0.62 : 0.42;
+  const eff = burstStrength * intensity;
+
+  // Deterministic cyber glitch bars & digital bug blocks for active glitch frames
+  const seed = Math.floor(frame / 2);
+  const slices = glitchActive
+    ? Array.from({ length: isBang || isCut ? 9 : 4 }, (_, i) => {
+        const y = random(`gy-${seed}-${i}`) * HEIGHT;
+        const h = 3 + random(`gh-${seed}-${i}`) * (isBang ? 28 : 14);
+        const w = WIDTH * (0.28 + random(`gw-${seed}-${i}`) * 0.72);
+        const x = (random(`gx-${seed}-${i}`) - 0.15) * WIDTH;
+        const colChoice = i % 3;
+        const color =
+          colChoice === 0
+            ? "rgba(0, 245, 255, 0.42)"
+            : colChoice === 1
+              ? "rgba(255, 45, 115, 0.38)"
+              : "rgba(255, 255, 255, 0.34)";
+        return { x, y, w, h, color };
+      })
+    : [];
+
+  // Tiny digital pixel "bugs" / signal corruption squares
+  const bugs = glitchActive
+    ? Array.from({ length: isBang || isCut ? 14 : 6 }, (_, i) => {
+        const x = random(`bx-${seed}-${i}`) * (WIDTH - 90);
+        const y = HEIGHT * 0.14 + random(`by-${seed}-${i}`) * (HEIGHT * 0.72);
+        const w = 14 + random(`bw-${seed}-${i}`) * 72;
+        const h = 4 + random(`bh-${seed}-${i}`) * 14;
+        const color = i % 2 === 0 ? "rgba(0, 240, 255, 0.52)" : accent;
+        return { x, y, w, h, color, op: (0.25 + random(`bo-${seed}-${i}`) * 0.45) * eff };
+      })
+    : [];
+
+  return (
+    <AbsoluteFill style={{ pointerEvents: "none", overflow: "hidden" }}>
+      {/* 1. Unified Cinema Night LUT Wash over BOTH car + chibi for seamless contrast cohesion */}
+      <AbsoluteFill
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(16, 36, 56, 0.22) 0%, rgba(18, 12, 24, 0.08) 46%, rgba(12, 22, 34, 0.34) 100%)",
+          mixBlendMode: "soft-light",
+        }}
+      />
+
+      {/* 2. Subtle CRT horizontal scanlines binding anime + photo into one screen surface */}
+      {config.scanlines !== false ? (
+        <AbsoluteFill
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(0,0,0,0.34) 0px, rgba(0,0,0,0.34) 1px, rgba(255,255,255,0) 1px, rgba(255,255,255,0) 4px)",
+            opacity: 0.16 + eff * 0.08,
+            mixBlendMode: "multiply",
+          }}
+        />
+      ) : null}
+
+      {/* 3. Unified Animated Micro Film Grain (eliminates digital vector sharpness mismatch) */}
+      {config.grain !== false ? (
+        <svg
+          width={WIDTH}
+          height={HEIGHT}
+          viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+          style={{ position: "absolute", inset: 0, opacity: 0.095 + hit * 0.025, mixBlendMode: "overlay" }}
+        >
+          <filter id={`grain-${seed % 12}`}>
+            <feTurbulence type="fractalNoise" baseFrequency="0.82" numOctaves="2" seed={(seed % 12) + 1} stitchTiles="stitch" />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+          <rect width={WIDTH} height={HEIGHT} filter={`url(#grain-${seed % 12})`} />
+        </svg>
+      ) : null}
+
+      {/* 4. Beat-reactive Cyber Glitch Slices & Digital Bug Blocks */}
+      {glitchActive ? (
+        <svg width={WIDTH} height={HEIGHT} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} style={{ position: "absolute", inset: 0 }}>
+          {slices.map((s, idx) => (
+            <rect
+              key={`sl-${idx}`}
+              x={s.x}
+              y={s.y}
+              width={s.w}
+              height={s.h}
+              fill={s.color}
+              fillOpacity={eff * 0.65}
+              style={{ mixBlendMode: "screen" }}
+            />
+          ))}
+          {bugs.map((b, idx) => (
+            <rect
+              key={`bg-${idx}`}
+              x={b.x}
+              y={b.y}
+              width={b.w}
+              height={b.h}
+              fill={b.color}
+              fillOpacity={b.op}
+            />
+          ))}
+          {/* Thin horizontal VHS tracking tear line */}
+          <rect
+            x={0}
+            y={((frame * 47) % HEIGHT)}
+            width={WIDTH}
+            height={2.5}
+            fill="#FFFFFF"
+            fillOpacity={0.28 * eff}
+          />
+        </svg>
+      ) : null}
+
+      {/* 5. Subtle chromatic edge fringe on heavy bass hits */}
+      {hit > 0.72 ? (
+        <AbsoluteFill
+          style={{
+            boxShadow: `inset ${(6 * hit).toFixed(1)}px 0 18px rgba(0,245,255,${(0.18 * intensity).toFixed(2)}), inset ${(-6 * hit).toFixed(1)}px 0 18px rgba(255,40,105,${(0.18 * intensity).toFixed(2)})`,
+          }}
+        />
+      ) : null}
     </AbsoluteFill>
   );
 };

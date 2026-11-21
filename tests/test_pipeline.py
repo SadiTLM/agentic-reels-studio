@@ -85,6 +85,9 @@ class TestAgenticReelsStudio(unittest.TestCase):
         backdrops_dir = ROOT / "brand" / "assets" / "backdrops"
         for name in ("porsche-gt3-rain.jpg", "neon-alley-coupe.jpg", "ferrari-crimson-dock.jpg", "skyline-overpass.jpg"):
             self.assertTrue((backdrops_dir / name).exists())
+        bandida_dir = ROOT / "brand" / "assets" / "chibi-bandida"
+        for i in range(1, 13):
+            self.assertTrue((bandida_dir / f"pose_{i:02d}.png").exists())
 
     def test_sprite_prep_preserves_interior_white_and_removes_exterior_bg(self):
         import tempfile
@@ -112,6 +115,24 @@ class TestAgenticReelsStudio(unittest.TestCase):
                 # Corners (padding) must be fully transparent; center white interior stays opaque
                 self.assertEqual(cut.getpixel((0, 0))[3], 0)
                 self.assertEqual(cut.getpixel((cut.width // 2, cut.height // 2))[3], 255)
+
+    def test_sprite_prep_removes_trapped_side_white_hole_keeps_center(self):
+        from PIL import Image, ImageDraw
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from sprite_prep import remove_trapped_white_holes
+
+        img = Image.new("RGBA", (100, 100), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        # Character body silhouette in (10,10)-(90,90)
+        d.rectangle([10, 10, 90, 90], fill=(30, 30, 30, 255))
+        # Protected center white shirt/eye
+        d.rectangle([45, 35, 55, 45], fill=(255, 255, 255, 255))
+        # Trapped pure-white pocket on far-left hair edge
+        d.rectangle([14, 15, 22, 25], fill=(255, 255, 255, 255))
+
+        cleaned = remove_trapped_white_holes(img)
+        self.assertEqual(cleaned.getpixel((18, 20))[3], 0)
+        self.assertEqual(cleaned.getpixel((50, 40))[3], 255)
 
     def test_audio_sync_dual_export_creates_both_mp4s_and_guide(self):
         import tempfile

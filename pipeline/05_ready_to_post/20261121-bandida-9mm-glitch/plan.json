@@ -1,0 +1,32 @@
+{
+  "brand": {
+    "name": "Josué D. · SadiTLM",
+    "handle": "@saditlm"
+  },
+  "timezone": "America/Mexico_City",
+  "accounts": {
+    "main": {
+      "handle": "@saditlm",
+      "timezone": "America/Mexico_City",
+      "times": [
+        "19:00"
+      ]
+    }
+  },
+  "posts": [
+    {
+      "id": "20261121-bandida-9mm-glitch",
+      "format": "reel",
+      "media": [
+        "reel.mp4"
+      ],
+      "cover": "cover.jpg",
+      "caption": "Midnight glitch, 9mm sobre asfalto mojado.\n\n#chibi #jdm #glitchart #nightdrive",
+      "targets": [
+        {
+          "account": "main"
+        }
+      ]
+    }
+  ]
+}

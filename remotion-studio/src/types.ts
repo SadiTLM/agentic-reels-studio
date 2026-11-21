@@ -37,6 +37,12 @@ export type Scene = {
   chibiY?: number;
   /** Per-scene chibi scale multiplier override. */
   chibiScale?: number;
+  /** Scene ambient tint color (rgba/hex) to color-match the chibi into the night backdrop. */
+  sceneTint?: string;
+  /** Backlight rim-glow color wrapping the chibi silhouette. */
+  rimColor?: string;
+  /** Per-scene chibi exposure multiplier (e.g. 0.78-0.90 for dark night scenes). */
+  chibiBrightness?: number;
 };
 
 export type Theme = {
@@ -72,14 +78,27 @@ export type ChibiConfig = {
   y?: number;
   /** Character scale multiplier (default 1.0). */
   scale?: number;
-  /** Optional dance BPM override (defaults to top-level bpm or 148). */
+  /** Optional dance BPM override (defaults to top-level bpm or 155). */
   bpm?: number;
+  /** Pose switches per beat (e.g. 2 = double-time fluid dance for 8-12 pose packs). */
+  poseRate?: number;
+  /** Blend character smoothly into dark night scenes (exposure, soft focus, rim wrap, default true). */
+  nightGrade?: boolean;
   /** Render ground shadow & wet floor reflection (default true). */
   shadow?: boolean;
   /** Single 0-based scene index that triggers the final 'bang!' pose + impact VFX. */
   bangScene?: number;
   /** Array of 0-based scene indices that trigger 'bang!' pose + glass shatter + recoil shake. */
   bangScenes?: number[];
+};
+
+export type GlitchConfig = {
+  /** Overall glitch intensity 0..1 (default 0.65). */
+  intensity?: number;
+  /** Show subtle unified CRT scanlines + film grain (default true). */
+  scanlines?: boolean;
+  /** Show subtle animated film grain over whole composition (default true). */
+  grain?: boolean;
 };
 
 export type ShortProps = {
@@ -101,6 +120,8 @@ export type ShortProps = {
   visualMode?: VisualMode | null;
   /** Option B beat-synced chibi/anime dance overlay configuration. */
   chibi?: ChibiConfig | null;
+  /** Unified post-processing glitch / databug / scanline / film grain layer over whole frame. */
+  glitch?: GlitchConfig | boolean | null;
   /** Optional understated editorial signature watermark (e.g. "saditlm"). */
   watermark?: string | null;
   /** Small credit line, e.g. "Data: USGS". */

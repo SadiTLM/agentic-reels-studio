@@ -16,7 +16,7 @@ import {
 import { AFFIX, PUNCH, STAGGER, formatStat, loadFonts, statParts } from "./layout";
 import { FONTS, HEIGHT, LEFT_INSET, SAFE, SAFE_H, SAFE_W, SMALL, WIDTH, resolveTheme } from "./theme";
 import type { Block, Scene, SceneLayout, ShortProps, Theme } from "./types";
-import { ChibiDanceOverlay, CinematicVisualLayer, ProceduralBackdrop, SubtleWatermark, TimelineHud } from "./VisualModes";
+import { ChibiDanceOverlay, CinematicVisualLayer, GlitchPostFX, ProceduralBackdrop, SubtleWatermark, TimelineHud } from "./VisualModes";
 import { Words, settleFrame } from "./Words";
 
 loadFonts();
@@ -373,6 +373,11 @@ export const Short: React.FC<ShortProps & { guides?: boolean; mute?: boolean }> 
   const music = props.music;
   const seed = props.scenes.map((s) => s.text ?? s.title ?? s.label ?? s.image ?? "").join("|");
   const effectiveBpm = props.bpm ?? props.chibi?.bpm ?? 155;
+  const bangScenesList = [
+    ...(props.chibi?.bangScene != null ? [props.chibi.bangScene] : []),
+    ...(props.chibi?.bangScenes ?? []),
+  ];
+  const glitchConfig = props.glitch === true ? {} : props.glitch || null;
   return (
     <AbsoluteFill style={{ background: theme.bg, width: WIDTH, height: HEIGHT }}>
       {props.visualMode && props.visualMode !== "ambient" ? (
@@ -388,6 +393,9 @@ export const Short: React.FC<ShortProps & { guides?: boolean; mute?: boolean }> 
       ))}
       {props.chibi ? (
         <ChibiDanceOverlay chibi={props.chibi} scenes={props.scenes} layout={layout} bpm={effectiveBpm} accent={theme.accent} />
+      ) : null}
+      {glitchConfig ? (
+        <GlitchPostFX config={glitchConfig} layout={layout} bangScenes={bangScenesList} bpm={effectiveBpm} accent={theme.accent} />
       ) : null}
       {props.watermark ? <SubtleWatermark text={props.watermark} /> : null}
       {props.visualMode === "timeline" ? (

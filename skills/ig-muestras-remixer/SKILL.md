@@ -22,7 +22,7 @@ Identifica el **BPM real**, los cortes exactos al beat y el segundo exacto del i
    ```bash
    python3 scripts/sprite_prep.py extract-dance baile_ref.mp4 --fps 3 --max-frames 16 --out /tmp/baile_poses
    ```
-   - Para **chibi sobre cortes rápidos** (estilo `@shotbykusa` / `@sinnerm3` / `@d2_shots`): usa escenas `type: "visual"` sin texto invasivo, `exactTiming: true`, `backdropDim: 0`, transiciones RGB speed-ramp automáticas y `chibi` con `bangScenes` (pose finger-gun + impacto de cristal + camera recoil shake).
+   - Para **chibi sobre cortes rápidos** (estilo `@shotbykusa` / `@sinnerm3` / `@d2_shots`): usa escenas `type: "visual"` sin texto invasivo, `exactTiming: true`, `backdropDim: 0`, transiciones RGB speed-ramp automáticas, **8–12 poses fluidas** (`poseRate: 2` con crossfade motion-blur), **integración nocturna** (`nightGrade: true`, `chibiBrightness`, `sceneTint`, `rimColor`), `bangScenes` (pose finger-gun + cristal roto + recoil) y capa unificada **`glitch`** (`GlitchPostFX`: grano de película, scanlines CRT, slices RGB y bugs digitales sobre fondo + personaje a la vez para evitar contraste artificial).
    - Para **transferencia fluida 30fps de baile completo** (estilo `@gamstergaming`): conecta un motor V2V con GPU externa (Viggle AI / Kling Motion Control / ComfyUI OpenPose) y pasa el resultado por `audio_sync.py dual-export`.
 
 ## 3. Exportación Dual Obligatoria (Con Sonido + Sin Sonido + Canción y Segundo)
