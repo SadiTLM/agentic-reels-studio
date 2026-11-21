@@ -111,6 +111,66 @@ export type GlitchConfig = {
   dissolve?: boolean;
 };
 
+export type RigParts = {
+  headSmirk: string;
+  headBang: string;
+  hairBack: string;
+  torso: string;
+  skirt: string;
+  tie: string;
+  backpack: string;
+  armUpper: string;
+  armLower: string;
+  armBang: string;
+  thigh: string;
+  legLeft: string;
+  legRight: string;
+};
+
+export type RigMotionFrame = {
+  hx: number;
+  hy: number;
+  t: number;
+  ht: number;
+  hd: number;
+  yw: number;
+  sw: number;
+  rUA: number;
+  rFA: number;
+  lUA: number;
+  lFA: number;
+  rTh: number;
+  rSh: number;
+  lTh: number;
+  lSh: number;
+  tie: number;
+  hr: number;
+  sf: number;
+};
+
+export type RigConfig = {
+  /** Separated transparent Live2D anime body-part PNG paths. */
+  parts: RigParts;
+  /** Path to MediaPipe 30fps motion JSON (loaded by render.mjs into `frames`). */
+  motionSrc?: string;
+  /** Inlined 30fps kinematic frame sequence populated automatically by render.mjs. */
+  frames?: RigMotionFrame[];
+  /** Horizontal anchor as fraction of width (0..1, default 0.5). */
+  x?: number;
+  /** Feet baseline vertical anchor as fraction of height (0..1, default 0.80). */
+  y?: number;
+  /** Rig scale multiplier (default 1.0). */
+  scale?: number;
+  /** Optional dance BPM override (defaults to top-level bpm or 155). */
+  bpm?: number;
+  /** Blend character smoothly into dark night scenes (default true). */
+  nightGrade?: boolean;
+  /** Render ground contact shadow & wet-asphalt reflection (default true). */
+  shadow?: boolean;
+  /** Array of 0-based scene indices triggering winking finger-gun BANG! pose + shattered glass VFX. */
+  bangScenes?: number[];
+};
+
 export type ShortProps = {
   theme?: string | Partial<Theme> | null;
   font?: FontName | null;
@@ -128,9 +188,11 @@ export type ShortProps = {
   backdropDim?: number | null;
   /** Procedural Option A visual engine: ambient (default), particles, ellipse, or timeline. */
   visualMode?: VisualMode | null;
-  /** Option B beat-synced chibi/anime dance overlay configuration. */
+  /** Option B beat-synced chibi/anime dance overlay (video or pose sprites). */
   chibi?: ChibiConfig | null;
-  /** Unified post-processing glitch / databug / scanline / film grain layer over whole frame. */
+  /** 100% free local 30fps MediaPipe-driven Live2D articulated anime character rig. */
+  rig?: RigConfig | null;
+  /** Unified post-processing glitch / smoke / dissolve / databug / scanline / film grain layer. */
   glitch?: GlitchConfig | boolean | null;
   /** Optional understated editorial signature watermark (e.g. "saditlm"). */
   watermark?: string | null;

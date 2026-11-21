@@ -22,8 +22,10 @@ Identifica el **BPM real**, los cortes exactos al beat y el segundo exacto del i
    ```bash
    python3 scripts/sprite_prep.py extract-dance baile_ref.mp4 --fps 3 --max-frames 16 --out /tmp/baile_poses
    ```
-   - Para **chibi sobre cortes rápidos** (estilo `@shotbykusa` / `@sinnerm3` / `@d2_shots`): usa escenas `type: "visual"` sin texto invasivo, `exactTiming: true`, `backdropDim: 0`, transiciones RGB speed-ramp automáticas, **8–12 poses fluidas** (`poseRate: 2` con crossfade motion-blur), **integración nocturna** (`nightGrade: true`, `chibiBrightness`, `sceneTint`, `rimColor`), `bangScenes` (pose finger-gun + cristal roto + recoil) y capa unificada **`glitch`** (`GlitchPostFX`: grano de película, scanlines CRT, slices RGB y bugs digitales sobre fondo + personaje a la vez para evitar contraste artificial).
-   - Para **transferencia fluida 30fps de baile completo** (estilo `@gamstergaming`): conecta un motor V2V con GPU externa (Viggle AI / Kling Motion Control / ComfyUI OpenPose) y pasa el resultado por `audio_sync.py dual-export`.
+   - **Motor 100% gratis local 30fps Live2D (`rig` + `scripts/pose_track.py`):** Extrae 33 puntos reales del cuerpo frame a frame con MediaPipe Pose desde cualquier baile de `Muestras` (`python3 scripts/pose_track.py baile.mp4 --out motion.json`) y anima piezas anime 2D independientes (`brand/assets/bandida-rig/`: cabeza guiño/normal, cabello trasero con inercia, torso, corbata con física, mochila 2.5D, falda, brazos y piernas de 2 huesos) a 30fps continuos + **humo nocturno** (`smoke: true`), **desvanecimientos en cortes** (`dissolve: true`), glitch RGB y `BANG!`.
+   - **Motor 100% gratis en GPU T4 (`notebooks/bandida_colab_motion_t4.ipynb`):** Notebook 1-clic para Google Colab (MimicMotion + FFmpeg chroma-key -> `.webm` VP9 alfa) compatible directo con `chibi.video` en Remotion.
+   - **Motor API de pago (`scripts/fal_studio.py` + skill `fal-ai-video`):** Kling Motion Control + Bria VRMBG 3.0 -> `.webm` VP9 alfa directo en `chibi.video`.
+   - **Fallback multi-pose (`chibi.poses`):** 8–12 poses con `poseRate: 2`, `nightGrade: true` y `GlitchPostFX`.
 
 ## 3. Exportación Dual Obligatoria (Con Sonido + Sin Sonido + Canción y Segundo)
 ```bash

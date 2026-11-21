@@ -1,3 +1,6 @@
 # Python dependencies for Agentic Reels Studio server-side scripts
 fal-client>=1.0.3
 Pillow>=10.0.0
+# Free local 30fps pose tracking (scripts/pose_track.py)
+mediapipe>=1.0.0
+opencv-python-headless>=4.10.0

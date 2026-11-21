@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Img, OffthreadVideo, interpolate, random, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { HEIGHT, SAFE, SMALL, WIDTH } from "./theme";
-import type { ChibiConfig, GlitchConfig, Scene, SceneLayout, Theme, VisualMode } from "./types";
+import type { ChibiConfig, GlitchConfig, RigConfig, RigMotionFrame, Scene, SceneLayout, Theme, VisualMode } from "./types";
 
 const CLAMP = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
@@ -693,7 +693,7 @@ export const GlitchPostFX: React.FC<{
 
   // Silky dark + neon light-leak dissolve feather across scene cut boundaries
   const dissolveIn = sceneIdx > 0 && sceneAge < 6 ? interpolate(sceneAge, [0, 6], [0.58, 0], CLAMP) : 0;
-  const dissolveOut = sceneIdx < layout.length - 1 && sceneRem <= 4 ? interpolate(sceneRem, [4, 0], [0, 0.46], CLAMP) : 0;
+  const dissolveOut = sceneIdx < layout.length - 1 && sceneRem <= 4 ? interpolate(sceneRem, [0, 4], [0.46, 0], CLAMP) : 0;
   const dissolveOp = Math.max(dissolveIn, dissolveOut) * (0.55 + 0.45 * intensity);
 
   // Drifting street smoke / exhaust mist coordinates
@@ -850,6 +850,542 @@ export const GlitchPostFX: React.FC<{
         <AbsoluteFill
           style={{
             boxShadow: `inset ${(6 * hit).toFixed(1)}px 0 18px rgba(0,245,255,${(0.18 * intensity).toFixed(2)}), inset ${(-6 * hit).toFixed(1)}px 0 18px rgba(255,40,105,${(0.18 * intensity).toFixed(2)})`,
+          }}
+        />
+      ) : null}
+    </AbsoluteFill>
+  );
+};
+
+const DEFAULT_RIG_FRAME: RigMotionFrame = {
+  hx: 0, hy: 0, t: 0, ht: 0, hd: 0, yw: 0, sw: 1,
+  rUA: 16, rFA: 8, lUA: -16, lFA: -8,
+  rTh: 8, rSh: 4, lTh: -8, lSh: -4,
+  tie: 0, hr: 0, sf: 1,
+};
+
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const lerpAngle = (a: number, b: number, t: number) => {
+  const diff = ((((b - a) % 360) + 540) % 360) - 180;
+  return a + diff * t;
+};
+
+/**
+ * 100% Free Local 30fps MediaPipe-Driven Live2D Articulated Anime Rig Overlay.
+ * Renders genuine cel-shaded Japanese anime body parts connected via true 2-bone hierarchical
+ * forward kinematics (hips, knees, sneakers, torso 2.5D yaw, backpack parallax, swinging tie,
+ * back-hair inertia, flaring pleated skirt, independent 2-bone arms, and winking finger-gun BANG!).
+ */
+export const BandidaRigOverlay: React.FC<{
+  rig: RigConfig;
+  scenes: Scene[];
+  layout: SceneLayout[];
+  bpm: number;
+  accent: string;
+}> = ({ rig, scenes, layout, bpm, accent }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const frames = rig.frames && rig.frames.length ? rig.frames : [DEFAULT_RIG_FRAME];
+  const raw = frames[frame % frames.length];
+
+  const effectiveBpm = rig.bpm ?? bpm ?? 155;
+  const { beatIndex, phase, hit } = beatMetrics(frame, fps, effectiveBpm);
+
+  const sceneIdx = Math.max(0, layout.findIndex((l) => frame >= l.from && frame < l.from + l.frames));
+  const curScene = scenes[sceneIdx];
+  const sceneAge = layout[sceneIdx] ? frame - layout[sceneIdx].from : 0;
+  const bangSet = new Set<number>(rig.bangScenes ?? []);
+  const isBangScene = bangSet.has(sceneIdx);
+  const bangStart = isBangScene && layout[sceneIdx] ? layout[sceneIdx].from : -999;
+  const bangAge = frame - bangStart;
+
+  // Smooth spring blend into iconic winking finger-gun BANG! pose on gunshot scenes
+  const bangBlend = isBangScene
+    ? Math.min(1, spring({ frame: Math.max(0, bangAge), fps, config: { damping: 14, stiffness: 260 } }))
+    : 0;
+
+  // Recoil shake locked to camera on bang hits
+  const shakeDecay = isBangScene ? Math.exp(-Math.max(0, bangAge) * 0.36) * (bangAge < 10 ? 1 : 0) : 0;
+  const shakeX = isBangScene ? Math.sin(bangAge * 2.7) * 18 * shakeDecay : 0;
+  const shakeY = isBangScene ? Math.cos(bangAge * 3.4) * 12 * shakeDecay : 0;
+  const bangPop = isBangScene ? 1 + 0.12 * Math.exp(-Math.max(0, bangAge) * 0.24) * bangBlend : 1;
+  const cameraBassPump = 1 + hit * 0.018;
+
+  // Kinematic channels blended smoothly with BANG! override (shortest-arc angles prevent spin)
+  const hx = lerp(raw.hx, 0.04, bangBlend * 0.72);
+  const hy = lerp(raw.hy, -0.05, bangBlend * 0.65);
+  const torsoDeg = lerpAngle(raw.t, -6.5, bangBlend * 0.8);
+  const hipTiltDeg = lerpAngle(raw.ht, 8.0, bangBlend * 0.75);
+  const headDeg = lerpAngle(raw.hd, -9.0, bangBlend * 0.8);
+  const yaw = lerp(raw.yw, -0.22, bangBlend * 0.75);
+  const sw = lerp(raw.sw, 0.94, bangBlend * 0.8);
+
+  // Viewer-left arm = subject right arm (rUA/rFA) -> aims finger-gun up-left on BANG!
+  const rUA = lerpAngle(raw.rUA, 78, bangBlend);
+  const rFA = lerpAngle(raw.rFA, 92, bangBlend);
+  // Viewer-right arm = subject left arm (lUA/lFA) -> sassy hand-on-hip on BANG!
+  const lUA = lerpAngle(raw.lUA, -36, bangBlend);
+  const lFA = lerpAngle(raw.lFA, 38, bangBlend);
+
+  const rTh = lerpAngle(raw.rTh, 14, bangBlend * 0.75);
+  const rSh = lerpAngle(raw.rSh, 8, bangBlend * 0.75);
+  const lTh = lerpAngle(raw.lTh, -16, bangBlend * 0.75);
+  const lSh = lerpAngle(raw.lSh, -10, bangBlend * 0.75);
+
+  const tieDeg = lerpAngle(raw.tie, 14, bangBlend * 0.65);
+  const hairLag = raw.hr;
+  const skirtFlare = raw.sf;
+
+  // Rhythmic RGB cyber-glitch bursts on the rig during cuts, bangs, and off-beat micro-glitches
+  const microGlitch = !isBangScene && beatIndex % 4 === 3 && phase < 0.22;
+  const rigRgbShift =
+    sceneIdx > 0 && sceneAge < 6
+      ? interpolate(sceneAge, [0, 6], [18, 0], CLAMP)
+      : isBangScene && bangAge < 7
+        ? interpolate(bangAge, [0, 7], [16, 0], CLAMP)
+        : microGlitch
+          ? 8 * Math.sin(frame * 3.1)
+          : 0;
+  const glitchJitterX = Math.abs(rigRgbShift) > 3 ? Math.sin(frame * 7.3) * 6 : 0;
+
+  const baseScale = (curScene?.chibiScale ?? rig.scale ?? 1.0) * bangPop * cameraBassPump;
+  const cx = (curScene?.chibiX ?? rig.x ?? 0.5) * WIDTH + hx * 135 * baseScale + shakeX + glitchJitterX;
+  const bottomY = (curScene?.chibiY ?? rig.y ?? 0.82) * HEIGHT + shakeY;
+  // Pelvis sits 222 local units above sneakers baseline when standing
+  const pelvisY = bottomY - (222 - hy * 95) * baseScale;
+
+  const nightGrade = rig.nightGrade !== false;
+  const showShadow = rig.shadow !== false;
+  const bright = curScene?.chibiBrightness ?? (nightGrade ? 0.84 : 1.0);
+  const rimColor = curScene?.rimColor ?? "rgba(255, 130, 80, 0.40)";
+  const sceneTint = curScene?.sceneTint ?? "rgba(32, 68, 92, 0.22)";
+  const rigFilter = nightGrade
+    ? `brightness(${bright.toFixed(2)}) contrast(0.96) saturate(0.92) blur(0.4px) drop-shadow(0 0 8px ${rimColor}) drop-shadow(0 12px 18px rgba(0,0,0,0.72))`
+    : "drop-shadow(0 14px 22px rgba(0,0,0,0.62))";
+
+  const p = rig.parts;
+  const torsoScaleX = 0.78 + 0.22 * Math.max(0.4, Math.min(1.12, sw));
+  const backpackOffsetX = -24 + yaw * 34;
+
+  // Helper rendering a complete articulated 2-bone leg (thigh -> nested knee -> sock+sneaker)
+  const renderLeg = (hipX: number, thDeg: number, shDeg: number, shinSrc: string, keyName: string) => (
+    <div
+      key={keyName}
+      style={{
+        position: "absolute",
+        left: hipX,
+        top: 10,
+        transform: `rotate(${thDeg.toFixed(2)}deg)`,
+        transformOrigin: "0px 0px",
+      }}
+    >
+      <Img
+        src={staticFile(p.thigh)}
+        style={{
+          position: "absolute",
+          left: -25,
+          top: -12,
+          width: 50,
+          height: 112,
+          display: "block",
+        }}
+      />
+      {/* Nested Knee Joint */}
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 90,
+          transform: `rotate(${(shDeg - thDeg).toFixed(2)}deg)`,
+          transformOrigin: "0px 0px",
+        }}
+      >
+        <Img
+          src={staticFile(shinSrc)}
+          style={{
+            position: "absolute",
+            left: -34,
+            top: -10,
+            width: 68,
+            height: 132,
+            display: "block",
+          }}
+        />
+      </div>
+    </div>
+  );
+
+  // Helper rendering a complete articulated 2-bone arm nested inside Torso (shoulder -> elbow -> hand)
+  const renderArm = (
+    shX: number,
+    uaWorldDeg: number,
+    faWorldDeg: number,
+    mirrorHand: boolean,
+    useBangHand: boolean,
+    keyName: string,
+  ) => {
+    const localUA = uaWorldDeg - torsoDeg;
+    const localFA = faWorldDeg - uaWorldDeg;
+    const foreSrc = useBangHand ? p.armBang : p.armLower;
+    return (
+      <div
+        key={keyName}
+        style={{
+          position: "absolute",
+          left: shX,
+          top: -110,
+          transform: `rotate(${localUA.toFixed(2)}deg)`,
+          transformOrigin: "0px 0px",
+        }}
+      >
+        <Img
+          src={staticFile(p.armUpper)}
+          style={{
+            position: "absolute",
+            left: -19,
+            top: -12,
+            width: 38,
+            height: 96,
+            transform: mirrorHand ? "scaleX(-1)" : undefined,
+            display: "block",
+          }}
+        />
+        {/* Nested Elbow Joint */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 76,
+            transform: `rotate(${localFA.toFixed(2)}deg)`,
+            transformOrigin: "0px 0px",
+          }}
+        >
+          <Img
+            src={staticFile(foreSrc)}
+            style={{
+              position: "absolute",
+              left: useBangHand ? -25 : -22,
+              top: -9,
+              width: useBangHand ? 52 : 45,
+              height: useBangHand ? 114 : 104,
+              transform: mirrorHand && !useBangHand ? "scaleX(-1)" : undefined,
+              display: "block",
+            }}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  // Complete Bandida Bella Articulated Character Assembly (centered at Pelvis = 0,0)
+  const renderAssembly = () => (
+    <div style={{ position: "relative", width: 0, height: 0 }}>
+      {/* 1. Back Hair Curtain (lags behind torso & head with inertia) */}
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 8,
+          transform: `rotate(${(torsoDeg * 0.85).toFixed(2)}deg)`,
+          transformOrigin: "0px 0px",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: -130,
+            transform: `rotate(${(headDeg * 0.7 + hairLag * 0.55).toFixed(2)}deg)`,
+            transformOrigin: "0px -20px",
+          }}
+        >
+          <Img
+            src={staticFile(p.hairBack)}
+            style={{
+              position: "absolute",
+              left: -94,
+              top: -118,
+              width: 188,
+              height: 178,
+              display: "block",
+            }}
+          />
+        </div>
+      </div>
+
+      {/* 2. Black Leather School Backpack (behind torso, shifts dynamically with 2.5D yaw) */}
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 8,
+          transform: `rotate(${torsoDeg.toFixed(2)}deg)`,
+          transformOrigin: "0px 0px",
+        }}
+      >
+        <Img
+          src={staticFile(p.backpack)}
+          style={{
+            position: "absolute",
+            left: backpackOffsetX - 66,
+            top: -136 + Math.abs(hit) * 4,
+            width: 132,
+            height: 142,
+            display: "block",
+          }}
+        />
+      </div>
+
+      {/* 3. Articulated 2-Bone Legs (behind pleated skirt) */}
+      {renderLeg(-26, rTh, rSh, p.legLeft, "leg-r")}
+      {renderLeg(26, lTh, lSh, p.legRight, "leg-l")}
+
+      {/* 4. Upper-body Torso Hierarchy (back arm -> torso -> tie -> dancing front arm -> head -> BANG! arm) */}
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 10,
+          transform: `rotate(${torsoDeg.toFixed(2)}deg)`,
+          transformOrigin: "0px 0px",
+        }}
+      >
+        {/* Right-side (viewer-right) arm */}
+        {renderArm(35 * torsoScaleX, lUA, lFA, false, false, "arm-l")}
+
+        {/* Sleeveless Navy School Blazer + White Collared Shirt */}
+        <Img
+          src={staticFile(p.torso)}
+          style={{
+            position: "absolute",
+            left: -49,
+            top: -144,
+            width: 98,
+            height: 150,
+            transform: `scaleX(${torsoScaleX.toFixed(3)})`,
+            transformOrigin: "center bottom",
+            display: "block",
+          }}
+        />
+
+        {/* Swinging Loosened Crimson School Tie (physics pendulum!) */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: -116,
+            transform: `rotate(${tieDeg.toFixed(2)}deg)`,
+            transformOrigin: "0px 0px",
+          }}
+        >
+          <Img
+            src={staticFile(p.tie)}
+            style={{
+              position: "absolute",
+              left: -13,
+              top: -4,
+              width: 26,
+              height: 92,
+              display: "block",
+            }}
+          />
+        </div>
+
+        {/* Viewer-Left dancing arm renders behind head so high grooves never block her face */}
+        {!isBangScene ? renderArm(-35 * torsoScaleX, rUA, rFA, true, false, "arm-r") : null}
+
+        {/* Expressive 2D Anime Head (swaps to winking grin on BANG!) */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: -130,
+            transform: `rotate(${(headDeg - torsoDeg * 0.4).toFixed(2)}deg)`,
+            transformOrigin: "0px 0px",
+          }}
+        >
+          <Img
+            src={staticFile(isBangScene ? p.headBang : p.headSmirk)}
+            style={{
+              position: "absolute",
+              left: -102,
+              top: -136,
+              width: 204,
+              height: 152,
+              display: "block",
+            }}
+          />
+        </div>
+
+        {/* BANG! finger-gun arm renders cleanly in foreground */}
+        {isBangScene ? renderArm(-35 * torsoScaleX, rUA, rFA, true, true, "arm-r-bang") : null}
+      </div>
+
+      {/* 5. Pleated Dark Anime School Skirt (tilts & flares dynamically with hip pop!) */}
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: -10,
+          transform: `rotate(${(hipTiltDeg * 0.8 + torsoDeg * 0.25).toFixed(2)}deg) scaleX(${(skirtFlare * (0.85 + 0.15 * sw)).toFixed(3)})`,
+          transformOrigin: "0px 0px",
+        }}
+      >
+        <Img
+          src={staticFile(p.skirt)}
+          style={{
+            position: "absolute",
+            left: -82,
+            top: -4,
+            width: 164,
+            height: 120,
+            display: "block",
+          }}
+        />
+      </div>
+    </div>
+  );
+
+  // Cracked-glass bullet-hole impact + warm muzzle spark right off her fingertips on BANG! scenes
+  const flashOp = isBangScene ? interpolate(bangAge, [0, 2, 10], [0.34, 0.18, 0], CLAMP) : 0;
+  const crackOp = isBangScene ? interpolate(bangAge, [0, 2, 22, 32], [0.94, 0.88, 0.68, 0], CLAMP) : 0;
+  const crackScale = isBangScene ? interpolate(bangAge, [0, 4, 18], [0.55, 1.08, 1.18], CLAMP) : 0.55;
+  const burstX = cx - 236 * baseScale;
+  const burstY = pelvisY - 110 * baseScale;
+
+  return (
+    <AbsoluteFill style={{ pointerEvents: "none" }}>
+      {/* Warm muzzle flash wash on gunshot beat */}
+      {flashOp > 0.01 ? (
+        <AbsoluteFill
+          style={{
+            background: "radial-gradient(circle at 34% 55%, rgba(255,240,210,0.82) 0%, rgba(255,120,70,0.22) 45%, rgba(0,0,0,0) 75%)",
+            opacity: flashOp,
+          }}
+        />
+      ) : null}
+
+      {/* Cracked-glass bullet-hole shatter VFX */}
+      {crackOp > 0.01 ? (
+        <svg width={WIDTH} height={HEIGHT} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} style={{ position: "absolute", inset: 0, opacity: crackOp }}>
+          <g transform={`translate(${burstX}, ${burstY}) scale(${crackScale})`}>
+            <circle cx={0} cy={0} r={20} fill="rgba(255,255,255,0.85)" />
+            <circle cx={0} cy={0} r={42} fill="none" stroke="rgba(255,255,255,0.78)" strokeWidth={3.2} strokeDasharray="16 8" />
+            <circle cx={0} cy={0} r={80} fill="none" stroke="rgba(180,235,255,0.55)" strokeWidth={2} strokeDasharray="24 14" />
+            <circle cx={0} cy={0} r={124} fill="none" stroke="rgba(255,255,255,0.32)" strokeWidth={1.5} strokeDasharray="18 22" />
+            {Array.from({ length: 16 }, (_, i) => {
+              const ang = (i / 16) * Math.PI * 2 + (i % 3) * 0.07;
+              const r1 = 15;
+              const rMid = 60 + (i % 3) * 18;
+              const r2 = i % 2 === 0 ? 164 : 108;
+              const mx = Math.cos(ang + 0.08) * rMid;
+              const my = Math.sin(ang + 0.08) * rMid;
+              return (
+                <polyline
+                  key={i}
+                  points={`${(Math.cos(ang) * r1).toFixed(1)},${(Math.sin(ang) * r1).toFixed(1)} ${mx.toFixed(1)},${my.toFixed(1)} ${(Math.cos(ang) * r2).toFixed(1)},${(Math.sin(ang) * r2).toFixed(1)}`}
+                  fill="none"
+                  stroke={i % 4 === 0 ? accent : "#FFFFFF"}
+                  strokeWidth={i % 2 === 0 ? 3 : 1.7}
+                  strokeOpacity={i % 2 === 0 ? 0.88 : 0.62}
+                  strokeLinecap="round"
+                />
+              );
+            })}
+          </g>
+        </svg>
+      ) : null}
+
+      {/* Ground contact shadow + wet-asphalt reflection of the entire dancing rig */}
+      {showShadow ? (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              left: cx - 130 * baseScale,
+              top: bottomY - 18,
+              width: 260 * baseScale,
+              height: 44,
+              borderRadius: "50%",
+              background: "radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 74%)",
+              transform: `scale(${Math.max(0.55, 1 + hy * 0.45).toFixed(3)})`,
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: cx,
+              top: bottomY + (222 + hy * 65) * baseScale * 0.56,
+              transform: `scale(${baseScale.toFixed(4)}, ${(-baseScale * 0.56).toFixed(4)})`,
+              transformOrigin: "0px 0px",
+              opacity: 0.23,
+              filter: `brightness(0.74) blur(4.2px) drop-shadow(0 0 10px ${rimColor})`,
+            }}
+          >
+            {renderAssembly()}
+          </div>
+        </>
+      ) : null}
+
+      {/* RGB cyber-glitch ghosts on cuts, beats & BANG! hits */}
+      {Math.abs(rigRgbShift) > 0.8 ? (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              left: cx - rigRgbShift,
+              top: pelvisY,
+              transform: `scale(${baseScale.toFixed(4)})`,
+              transformOrigin: "0px 0px",
+              opacity: 0.42,
+              mixBlendMode: "screen",
+              filter: "hue-rotate(-40deg) saturate(2.2) blur(1px)",
+            }}
+          >
+            {renderAssembly()}
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              left: cx + rigRgbShift,
+              top: pelvisY,
+              transform: `scale(${baseScale.toFixed(4)})`,
+              transformOrigin: "0px 0px",
+              opacity: 0.42,
+              mixBlendMode: "screen",
+              filter: "hue-rotate(145deg) saturate(2.2) blur(1px)",
+            }}
+          >
+            {renderAssembly()}
+          </div>
+        </>
+      ) : null}
+
+      {/* Main Night-Graded 30fps Articulated Bandida Bella Rig */}
+      <div
+        style={{
+          position: "absolute",
+          left: cx,
+          top: pelvisY,
+          transform: `scale(${baseScale.toFixed(4)})`,
+          transformOrigin: "0px 0px",
+          filter: rigFilter,
+        }}
+      >
+        {renderAssembly()}
+      </div>
+
+      {/* Ambient street-light color wrap fusing character into night environment */}
+      {nightGrade ? (
+        <div
+          style={{
+            position: "absolute",
+            left: cx - 220 * baseScale,
+            top: pelvisY - 260 * baseScale,
+            width: 440 * baseScale,
+            height: 500 * baseScale,
+            background: `radial-gradient(ellipse at 50% 60%, ${sceneTint} 0%, rgba(0,0,0,0) 72%)`,
+            mixBlendMode: "soft-light",
           }}
         />
       ) : null}

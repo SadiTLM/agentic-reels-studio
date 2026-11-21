@@ -401,6 +401,11 @@ def cmd_produce(args: argparse.Namespace) -> int:
         short_spec["chibi"]["poses"] = [_resolve_asset(x) for x in short_spec["chibi"]["poses"]]
     if isinstance(short_spec.get("chibi"), dict) and short_spec["chibi"].get("video"):
         short_spec["chibi"]["video"] = _resolve_asset(short_spec["chibi"]["video"])
+    if isinstance(short_spec.get("rig"), dict):
+        if isinstance(short_spec["rig"].get("parts"), dict):
+            short_spec["rig"]["parts"] = {k: _resolve_asset(v) for k, v in short_spec["rig"]["parts"].items()}
+        if short_spec["rig"].get("motionSrc"):
+            short_spec["rig"]["motionSrc"] = _resolve_asset(short_spec["rig"]["motionSrc"])
     for sc in short_spec.get("scenes", []):
         if sc.get("image"):
             sc["image"] = _resolve_asset(sc["image"])

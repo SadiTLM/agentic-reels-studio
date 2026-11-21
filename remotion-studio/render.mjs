@@ -68,7 +68,7 @@ const bring = (src, what) => {
   return `assets/${path.basename(assetsDir)}/${dest}`;
 };
 // Remotion merges the Studio sample's props under these; null every option this file leaves out.
-for (const k of ["theme", "font", "fps", "pace", "bpm", "exactTiming", "music", "background", "backdropDim", "visualMode", "chibi", "glitch", "watermark", "footer", "handle", "highlightStyle", "progress", "sfx", "sfxVolume"]) {
+for (const k of ["theme", "font", "fps", "pace", "bpm", "exactTiming", "music", "background", "backdropDim", "visualMode", "chibi", "rig", "glitch", "watermark", "footer", "handle", "highlightStyle", "progress", "sfx", "sfxVolume"]) {
   if (!(k in props)) props[k] = null;
 }
 if (flag("--mute")) props.mute = true;
@@ -84,9 +84,28 @@ if (props.chibi) {
   }
   props.chibi = nextChibi;
 }
+const rigPartFiles = [];
+if (props.rig) {
+  const nextRig = { ...props.rig };
+  if (nextRig.parts && typeof nextRig.parts === "object") {
+    const stagedParts = {};
+    for (const [k, v] of Object.entries(nextRig.parts)) {
+      stagedParts[k] = bring(v, `rig.parts.${k}`);
+      rigPartFiles.push(stagedParts[k]);
+    }
+    nextRig.parts = stagedParts;
+  }
+  if (nextRig.motionSrc && !Array.isArray(nextRig.frames)) {
+    const mFile = path.resolve(path.dirname(abs), nextRig.motionSrc);
+    if (!fs.existsSync(mFile)) fail(`rig.motionSrc not found: ${mFile}`);
+    const parsedMotion = JSON.parse(fs.readFileSync(mFile, "utf8"));
+    nextRig.frames = Array.isArray(parsedMotion) ? parsedMotion : (parsedMotion.frames ?? []);
+  }
+  props.rig = nextRig;
+}
 (props.scenes ?? []).forEach((s, i) => (s.image = bring(s.image, `scenes[${i}].image`)));
 // Keep this short's asset folder to the files it uses now.
-const used = new Set([props.music?.src, props.background, props.chibi?.video, ...(props.chibi?.poses ?? []), ...(props.scenes ?? []).map((s) => s.image)].filter(Boolean).map((p) => path.basename(p)));
+const used = new Set([props.music?.src, props.background, props.chibi?.video, ...(props.chibi?.poses ?? []), ...rigPartFiles, ...(props.scenes ?? []).map((s) => s.image)].filter(Boolean).map((p) => path.basename(p)));
 if (fs.existsSync(assetsDir)) for (const f of fs.readdirSync(assetsDir)) if (!used.has(f)) fs.rmSync(path.join(assetsDir, f), { force: true });
 
 const t0 = Date.now();

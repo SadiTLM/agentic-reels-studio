@@ -250,6 +250,40 @@ class TestAgenticReelsStudio(unittest.TestCase):
             self.assertEqual(bg_data["arguments"]["background_color"], "Transparent")
             self.assertEqual(bg_data["arguments"]["output_container_and_codec"], "webm_vp9")
 
+    def test_live2d_rig_assets_pose_tracker_and_colab_notebook(self):
+        rig_dir = ROOT / "brand" / "assets" / "bandida-rig"
+        expected_parts = (
+            "head_smirk.png",
+            "head_bang.png",
+            "hair_back.png",
+            "torso.png",
+            "skirt.png",
+            "tie.png",
+            "backpack.png",
+            "arm_upper.png",
+            "arm_lower.png",
+            "arm_bang.png",
+            "thigh.png",
+            "leg_left.png",
+            "leg_right.png",
+        )
+        for fname in expected_parts:
+            self.assertTrue((rig_dir / fname).exists(), f"Missing Live2D rig asset: {fname}")
+
+        pt_help = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "pose_track.py"), "--help"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        self.assertIn("MediaPipe Pose", pt_help.stdout)
+
+        nb_path = ROOT / "notebooks" / "bandida_colab_motion_t4.ipynb"
+        self.assertTrue(nb_path.exists())
+        nb = json.loads(nb_path.read_text(encoding="utf-8"))
+        self.assertEqual(nb.get("nbformat"), 4)
+        self.assertGreaterEqual(len(nb.get("cells", [])), 5)
+
 
 if __name__ == "__main__":
     unittest.main()
