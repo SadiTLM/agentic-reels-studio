@@ -74,12 +74,19 @@ for (const k of ["theme", "font", "fps", "pace", "bpm", "exactTiming", "music", 
 if (flag("--mute")) props.mute = true;
 if (props.music) props.music = { ...props.music, src: bring(props.music.src, "music.src") };
 props.background = bring(props.background, "background");
-if (props.chibi && Array.isArray(props.chibi.poses)) {
-  props.chibi = { ...props.chibi, poses: props.chibi.poses.map((p, i) => bring(p, `chibi.poses[${i}]`)) };
+if (props.chibi) {
+  const nextChibi = { ...props.chibi };
+  if (Array.isArray(nextChibi.poses)) {
+    nextChibi.poses = nextChibi.poses.map((p, i) => bring(p, `chibi.poses[${i}]`));
+  }
+  if (nextChibi.video) {
+    nextChibi.video = bring(nextChibi.video, "chibi.video");
+  }
+  props.chibi = nextChibi;
 }
 (props.scenes ?? []).forEach((s, i) => (s.image = bring(s.image, `scenes[${i}].image`)));
 // Keep this short's asset folder to the files it uses now.
-const used = new Set([props.music?.src, props.background, ...(props.chibi?.poses ?? []), ...(props.scenes ?? []).map((s) => s.image)].filter(Boolean).map((p) => path.basename(p)));
+const used = new Set([props.music?.src, props.background, props.chibi?.video, ...(props.chibi?.poses ?? []), ...(props.scenes ?? []).map((s) => s.image)].filter(Boolean).map((p) => path.basename(p)));
 if (fs.existsSync(assetsDir)) for (const f of fs.readdirSync(assetsDir)) if (!used.has(f)) fs.rmSync(path.join(assetsDir, f), { force: true });
 
 const t0 = Date.now();

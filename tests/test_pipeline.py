@@ -177,6 +177,79 @@ class TestAgenticReelsStudio(unittest.TestCase):
             self.assertIn("0:14", guide_text)
             self.assertIn("TAKE ME", guide_text)
 
+    def test_fal_studio_check_and_dry_runs(self):
+        env_example = (ROOT / ".env.example").read_text(encoding="utf-8")
+        self.assertIn("FAL_KEY=", env_example)
+        self.assertTrue((ROOT / "skills" / "fal-ai-video" / "SKILL.md").exists())
+        self.assertTrue((ROOT / "requirements.txt").exists())
+
+        chk = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "fal_studio.py"), "check", "--json"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        chk_data = json.loads(chk.stdout)
+        self.assertIn(chk_data["fal_key_state"], ("Present", "Absent", "Inaccessible"))
+        self.assertFalse(chk_data["api_call_made"])
+        self.assertEqual(
+            chk_data["endpoints"]["motion_control"]["v3-pro"]["endpoint"],
+            "fal-ai/kling-video/v3/pro/motion-control",
+        )
+        self.assertEqual(
+            chk_data["endpoints"]["video_bg_removal"]["endpoint"],
+            "bria/video/background-removal/v3",
+        )
+
+        # Dry-run motion transfer against existing local Bandida pose + sample mp4 (0 network calls)
+        sample_video = ROOT / "pipeline" / "05_ready_to_post" / "20261121-bandida-9mm-glitch" / "reel.mp4"
+        bandida_pose = ROOT / "brand" / "assets" / "chibi-bandida" / "pose_01.png"
+        if sample_video.exists() and bandida_pose.exists():
+            mt = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "fal_studio.py"),
+                    "motion-transfer",
+                    "--character",
+                    str(bandida_pose),
+                    "--dance",
+                    str(sample_video),
+                    "--model",
+                    "v3-pro",
+                    "--green-screen",
+                    "--out",
+                    "/tmp/test_motion_out.mp4",
+                    "--dry-run",
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            mt_data = json.loads(mt.stdout)
+            self.assertTrue(mt_data["dry_run"])
+            self.assertEqual(mt_data["arguments"]["character_orientation"], "video")
+            self.assertIn("#00FF00", mt_data["arguments"]["prompt"])
+            self.assertGreater(mt_data["estimated_cost_usd"], 0)
+
+            bg = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "fal_studio.py"),
+                    "remove-bg-video",
+                    "--video",
+                    str(sample_video),
+                    "--out",
+                    "/tmp/test_alpha_out.webm",
+                    "--dry-run",
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            bg_data = json.loads(bg.stdout)
+            self.assertEqual(bg_data["arguments"]["background_color"], "Transparent")
+            self.assertEqual(bg_data["arguments"]["output_container_and_codec"], "webm_vp9")
+
 
 if __name__ == "__main__":
     unittest.main()

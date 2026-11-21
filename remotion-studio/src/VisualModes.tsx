@@ -376,9 +376,9 @@ export const SubtleWatermark: React.FC<{ text: string }> = ({ text }) => (
 );
 
 /**
- * Option B: Fluid Night-Integrated Chibi Dance Overlay
- * - Double-time 8-12 pose progression with motion-blur crossfade ghosting between poses
- * - Continuous multi-axis dance physics (horizontal groove glide, eased hop, hip skew, camera-locked bass pump)
+ * Option B: Fluid Night-Integrated Anime Dance Overlay
+ * - Supports BOTH 24-30fps alpha-transparent dance videos (`chibi.video`, e.g. fal.ai Kling Motion Control + Bria VRMBG 3.0)
+ *   AND legacy multi-pose sprite sheets (`chibi.poses`)
  * - Seamless night-atmosphere color integration (per-scene brightness/tint, soft optical focus, neon rim-light wrap)
  * - Synchronized RGB glitch ghosts on cuts/beats + cracked-glass bullet impact VFX on bangScenes
  */
@@ -392,7 +392,8 @@ export const ChibiDanceOverlay: React.FC<{
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const poses = chibi.poses ?? [];
-  if (!poses.length) return null;
+  const hasVideo = Boolean(chibi.video);
+  if (!hasVideo && !poses.length) return null;
 
   const effectiveBpm = chibi.bpm ?? bpm ?? 155;
   const { beats, beatIndex, phase, hit } = beatMetrics(frame, fps, effectiveBpm);
@@ -408,31 +409,34 @@ export const ChibiDanceOverlay: React.FC<{
   const bangStart = isBangScene && layout[sceneIdx] ? layout[sceneIdx].from : -999;
   const bangAge = frame - bangStart;
 
-  // Fluid pose progression: 2x per beat when >=8 poses are provided (~5.2 poses/sec at 155 BPM)
-  const danceCount = poses.length > 1 && bangSet.size > 0 ? poses.length - 1 : poses.length;
+  // Sprite fallback progression (only active when no 30fps transparent video is provided)
+  const danceCount = poses.length > 1 && bangSet.size > 0 ? poses.length - 1 : Math.max(1, poses.length);
   const poseRate = chibi.poseRate ?? (danceCount >= 8 ? 2 : 1);
   const stepFloat = beats * poseRate;
   const stepIndex = Math.floor(stepFloat);
   const stepPhase = stepFloat - stepIndex;
 
-  const poseSrc = isBangScene ? poses[poses.length - 1] : poses[stepIndex % danceCount];
-  const prevPoseSrc = isBangScene
-    ? poses[(Math.max(0, stepIndex - 1)) % danceCount]
-    : poses[(stepIndex - 1 + danceCount) % danceCount];
+  const poseSrc = poses.length ? (isBangScene ? poses[poses.length - 1] : poses[stepIndex % danceCount]) : "";
+  const prevPoseSrc = poses.length
+    ? isBangScene
+      ? poses[Math.max(0, stepIndex - 1) % danceCount]
+      : poses[(stepIndex - 1 + danceCount) % danceCount]
+    : "";
 
-  // Brief motion-blur smear crossfade on pose switch (melts consecutive poses smoothly)
-  const crossfadeOp = !isBangScene && stepPhase < 0.34 ? interpolate(stepPhase, [0, 0.34], [0.32, 0], CLAMP) : 0;
+  const crossfadeOp = !hasVideo && !isBangScene && stepPhase < 0.34 ? interpolate(stepPhase, [0, 0.34], [0.32, 0], CLAMP) : 0;
 
-  // Continuous multi-axis dance physics locked to the camera's BPM pulse
-  const hop = isBangScene
-    ? Math.sin(phase * Math.PI) * 9
-    : Math.pow(Math.abs(Math.sin(phase * Math.PI)), 0.72) * 26;
-  const grooveX = isBangScene ? 0 : Math.sin(beats * Math.PI * 0.5) * 34;
-  const squashX = 1 + hit * 0.052;
-  const squashY = 1 - hit * 0.044;
-  const cameraBassPump = 1 + hit * 0.022;
-  const swayDeg = isBangScene ? -3.4 : Math.sin(beats * Math.PI * 0.5) * 4.4;
-  const skewDeg = isBangScene ? 0 : Math.cos(beats * Math.PI) * 2.8;
+  // When rendering a real 30fps motion-transfer dance video, preserve natural footwork & hip sway (only apply subtle camera bass pump + recoil)
+  const hop = hasVideo
+    ? 0
+    : isBangScene
+      ? Math.sin(phase * Math.PI) * 9
+      : Math.pow(Math.abs(Math.sin(phase * Math.PI)), 0.72) * 26;
+  const grooveX = hasVideo || isBangScene ? 0 : Math.sin(beats * Math.PI * 0.5) * 34;
+  const squashX = hasVideo ? 1 : 1 + hit * 0.052;
+  const squashY = hasVideo ? 1 : 1 - hit * 0.044;
+  const cameraBassPump = 1 + hit * (hasVideo ? 0.016 : 0.022);
+  const swayDeg = hasVideo ? 0 : isBangScene ? -3.4 : Math.sin(beats * Math.PI * 0.5) * 4.4;
+  const skewDeg = hasVideo || isBangScene ? 0 : Math.cos(beats * Math.PI) * 2.8;
 
   // Recoil shake locked to camera on bang hits
   const shakeDecay = isBangScene ? Math.exp(-Math.max(0, bangAge) * 0.36) * (bangAge < 10 ? 1 : 0) : 0;
@@ -444,7 +448,7 @@ export const ChibiDanceOverlay: React.FC<{
     : 1;
 
   // Rhythmic RGB glitch tear ON the character itself during cuts, bangs, and micro-glitch beats
-  const microGlitch = !isBangScene && (beatIndex % 4 === 3) && phase < 0.22;
+  const microGlitch = !isBangScene && beatIndex % 4 === 3 && phase < 0.22;
   const chibiRgbShift =
     sceneIdx > 0 && sceneAge < 6
       ? interpolate(sceneAge, [0, 6], [18, 0], CLAMP)
@@ -470,6 +474,24 @@ export const ChibiDanceOverlay: React.FC<{
     : "drop-shadow(0 14px 22px rgba(0,0,0,0.62))";
 
   const transformMain = `translate(-50%, -100%) scale(${(squashX * bangPop * cameraBassPump).toFixed(4)}, ${(squashY * bangPop * cameraBassPump).toFixed(4)}) rotate(${swayDeg.toFixed(2)}deg) skewX(${skewDeg.toFixed(2)}deg)`;
+
+  const mediaStyle: React.CSSProperties = { height: spriteH, width: "auto", display: "block" };
+  const videoTrimBefore = Math.max(0, Math.round((chibi.videoStart ?? 0) * fps));
+  const videoRate = chibi.videoPlaybackRate ?? 1;
+
+  const renderCharacter = (overrideSrc?: string) =>
+    hasVideo && !overrideSrc ? (
+      <OffthreadVideo
+        src={staticFile(chibi.video!)}
+        muted
+        transparent
+        trimBefore={videoTrimBefore}
+        playbackRate={videoRate}
+        style={mediaStyle}
+      />
+    ) : (
+      <Img src={staticFile(overrideSrc ?? poseSrc)} style={mediaStyle} />
+    );
 
   // Cracked-glass bullet-hole impact + warm muzzle spark on bang hits
   const flashOp = isBangScene ? interpolate(bangAge, [0, 2, 10], [0.3, 0.16, 0], CLAMP) : 0;
@@ -550,13 +572,13 @@ export const ChibiDanceOverlay: React.FC<{
               WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0) 68%)",
             }}
           >
-            <Img src={staticFile(poseSrc)} style={{ height: spriteH, width: "auto", display: "block" }} />
+            {renderCharacter()}
           </div>
         </>
       ) : null}
 
-      {/* Motion-blur ghost of previous pose for silky anime fluid transition */}
-      {crossfadeOp > 0.02 ? (
+      {/* Motion-blur ghost of previous pose for sprite-pack fallback */}
+      {crossfadeOp > 0.02 && prevPoseSrc ? (
         <div
           style={{
             position: "absolute",
@@ -568,7 +590,7 @@ export const ChibiDanceOverlay: React.FC<{
             filter: `brightness(${bright.toFixed(2)}) blur(2.2px)`,
           }}
         >
-          <Img src={staticFile(prevPoseSrc)} style={{ height: spriteH, width: "auto", display: "block" }} />
+          {renderCharacter(prevPoseSrc)}
         </div>
       ) : null}
 
@@ -587,7 +609,7 @@ export const ChibiDanceOverlay: React.FC<{
               filter: "hue-rotate(-40deg) saturate(2.2) blur(1px)",
             }}
           >
-            <Img src={staticFile(poseSrc)} style={{ height: spriteH, width: "auto", display: "block" }} />
+            {renderCharacter()}
           </div>
           <div
             style={{
@@ -601,12 +623,12 @@ export const ChibiDanceOverlay: React.FC<{
               filter: "hue-rotate(145deg) saturate(2.2) blur(1px)",
             }}
           >
-            <Img src={staticFile(poseSrc)} style={{ height: spriteH, width: "auto", display: "block" }} />
+            {renderCharacter()}
           </div>
         </>
       ) : null}
 
-      {/* Main night-graded animated character sprite */}
+      {/* Main night-graded animated character (30fps alpha video or sprite fallback) */}
       <div
         style={{
           position: "absolute",
@@ -617,7 +639,7 @@ export const ChibiDanceOverlay: React.FC<{
           filter: spriteFilter,
         }}
       >
-        <Img src={staticFile(poseSrc)} style={{ height: spriteH, width: "auto", display: "block" }} />
+        {renderCharacter()}
       </div>
 
       {/* Subtle ambient street-light color spill wrapping her lower body into the scene */}
@@ -639,9 +661,9 @@ export const ChibiDanceOverlay: React.FC<{
 };
 
 /**
- * Unified Cyber-Glitch, Databug, Scanlines, Film Grain & Cinema Grade Post-FX Layer.
- * Applied OVER BOTH the supercar background and the anime chibi together so both worlds
- * share identical optical grain, RGB signal tears, digital bug artifacts, and color cohesion.
+ * Unified Cyber-Glitch, Nocturnal Smoke Haze, Cut Dissolves, Databug, Scanlines & Film Grain Post-FX Layer.
+ * Applied OVER BOTH the supercar background and the anime character together so both worlds
+ * share identical optical grain, drifting street mist, dissolve transitions, RGB signal tears, and color cohesion.
  */
 export const GlitchPostFX: React.FC<{
   config: GlitchConfig;
@@ -652,11 +674,14 @@ export const GlitchPostFX: React.FC<{
 }> = ({ config, layout, bangScenes, bpm, accent }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+  const t = frame / fps;
   const intensity = Math.min(1, Math.max(0, config.intensity ?? 0.68));
   const { beatIndex, phase, hit } = beatMetrics(frame, fps, bpm);
 
   const sceneIdx = Math.max(0, layout.findIndex((l) => frame >= l.from && frame < l.from + l.frames));
-  const sceneAge = layout[sceneIdx] ? frame - layout[sceneIdx].from : 0;
+  const curLayout = layout[sceneIdx];
+  const sceneAge = curLayout ? frame - curLayout.from : 0;
+  const sceneRem = curLayout ? curLayout.from + curLayout.frames - frame : 99;
   const isBang = bangScenes.includes(sceneIdx) && sceneAge < 11;
   const isCut = sceneIdx > 0 && sceneAge < 6;
   const isBeatBug = beatIndex % 4 === 3 && phase < 0.22;
@@ -665,6 +690,16 @@ export const GlitchPostFX: React.FC<{
   const glitchActive = (isBang || isCut || isBeatBug || isMicroFlicker) && intensity > 0.05;
   const burstStrength = isBang ? 1.0 : isCut ? 0.92 : isBeatBug ? 0.62 : 0.42;
   const eff = burstStrength * intensity;
+
+  // Silky dark + neon light-leak dissolve feather across scene cut boundaries
+  const dissolveIn = sceneIdx > 0 && sceneAge < 6 ? interpolate(sceneAge, [0, 6], [0.58, 0], CLAMP) : 0;
+  const dissolveOut = sceneIdx < layout.length - 1 && sceneRem <= 4 ? interpolate(sceneRem, [4, 0], [0, 0.46], CLAMP) : 0;
+  const dissolveOp = Math.max(dissolveIn, dissolveOut) * (0.55 + 0.45 * intensity);
+
+  // Drifting street smoke / exhaust mist coordinates
+  const smoke1X = 24 + Math.sin(t * 0.55) * 18;
+  const smoke2X = 72 + Math.cos(t * 0.42 + 1.2) * 20;
+  const smoke3X = 50 + Math.sin(t * 0.34 + 2.6) * 26;
 
   // Deterministic cyber glitch bars & digital bug blocks for active glitch frames
   const seed = Math.floor(frame / 2);
@@ -699,7 +734,7 @@ export const GlitchPostFX: React.FC<{
 
   return (
     <AbsoluteFill style={{ pointerEvents: "none", overflow: "hidden" }}>
-      {/* 1. Unified Cinema Night LUT Wash over BOTH car + chibi for seamless contrast cohesion */}
+      {/* 1. Unified Cinema Night LUT Wash over BOTH car + anime character for seamless contrast cohesion */}
       <AbsoluteFill
         style={{
           background:
@@ -708,7 +743,23 @@ export const GlitchPostFX: React.FC<{
         }}
       />
 
-      {/* 2. Subtle CRT horizontal scanlines binding anime + photo into one screen surface */}
+      {/* 2. Drifting Nocturnal Street Smoke / Exhaust Vapor Haze (blends feet & ground reflections organically) */}
+      {config.smoke !== false ? (
+        <AbsoluteFill
+          style={{
+            background: [
+              `radial-gradient(62% 24% at ${smoke1X.toFixed(1)}% 82%, rgba(160, 210, 235, ${(0.14 + hit * 0.04).toFixed(3)}) 0%, rgba(0, 0, 0, 0) 74%)`,
+              `radial-gradient(56% 22% at ${smoke2X.toFixed(1)}% 77%, rgba(255, 110, 140, ${(0.09 + hit * 0.03).toFixed(3)}) 0%, rgba(0, 0, 0, 0) 72%)`,
+              `radial-gradient(78% 28% at ${smoke3X.toFixed(1)}% 91%, rgba(210, 224, 240, ${(0.16 + hit * 0.035).toFixed(3)}) 0%, rgba(0, 0, 0, 0) 78%)`,
+            ].join(", "),
+            mixBlendMode: "screen",
+            filter: "blur(26px)",
+            opacity: 0.72,
+          }}
+        />
+      ) : null}
+
+      {/* 3. Subtle CRT horizontal scanlines binding anime + footage into one optical surface */}
       {config.scanlines !== false ? (
         <AbsoluteFill
           style={{
@@ -720,7 +771,7 @@ export const GlitchPostFX: React.FC<{
         />
       ) : null}
 
-      {/* 3. Unified Animated Micro Film Grain (eliminates digital vector sharpness mismatch) */}
+      {/* 4. Unified Animated Micro Film Grain (eliminates digital vector sharpness mismatch) */}
       {config.grain !== false ? (
         <svg
           width={WIDTH}
@@ -736,7 +787,27 @@ export const GlitchPostFX: React.FC<{
         </svg>
       ) : null}
 
-      {/* 4. Beat-reactive Cyber Glitch Slices & Digital Bug Blocks */}
+      {/* 5. Silky Scene Cut Dissolve & Luminous Vapor Leak */}
+      {config.dissolve !== false && dissolveOp > 0.01 ? (
+        <>
+          <AbsoluteFill
+            style={{
+              background: "radial-gradient(95% 85% at 50% 50%, rgba(8, 12, 20, 0.35) 0%, rgba(4, 6, 12, 0.92) 100%)",
+              opacity: dissolveOp,
+            }}
+          />
+          <AbsoluteFill
+            style={{
+              background:
+                "linear-gradient(125deg, rgba(0, 240, 255, 0.24) 0%, rgba(0, 0, 0, 0) 46%, rgba(255, 45, 115, 0.22) 100%)",
+              mixBlendMode: "screen",
+              opacity: dissolveOp * 0.85,
+            }}
+          />
+        </>
+      ) : null}
+
+      {/* 6. Beat-reactive Cyber Glitch Slices & Digital Bug Blocks */}
       {glitchActive ? (
         <svg width={WIDTH} height={HEIGHT} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} style={{ position: "absolute", inset: 0 }}>
           {slices.map((s, idx) => (
@@ -765,7 +836,7 @@ export const GlitchPostFX: React.FC<{
           {/* Thin horizontal VHS tracking tear line */}
           <rect
             x={0}
-            y={((frame * 47) % HEIGHT)}
+            y={(frame * 47) % HEIGHT}
             width={WIDTH}
             height={2.5}
             fill="#FFFFFF"
@@ -774,7 +845,7 @@ export const GlitchPostFX: React.FC<{
         </svg>
       ) : null}
 
-      {/* 5. Subtle chromatic edge fringe on heavy bass hits */}
+      {/* 7. Subtle chromatic edge fringe on heavy bass hits */}
       {hit > 0.72 ? (
         <AbsoluteFill
           style={{

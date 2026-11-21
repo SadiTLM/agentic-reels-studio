@@ -1,0 +1,3 @@
+# Python dependencies for Agentic Reels Studio server-side scripts
+fal-client>=1.0.3
+Pillow>=10.0.0

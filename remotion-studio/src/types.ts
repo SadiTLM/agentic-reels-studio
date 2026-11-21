@@ -70,8 +70,14 @@ export type SceneLayout = {
 export type VisualMode = "ambient" | "particles" | "ellipse" | "timeline";
 
 export type ChibiConfig = {
-  /** Array of local transparent PNG pose paths (relative to short.json). */
-  poses: string[];
+  /** Array of local transparent PNG pose paths (relative to short.json). Optional when `video` is provided. */
+  poses?: string[];
+  /** Optional 24-30fps alpha-transparent dance video (.webm VP9 yuva420p from fal.ai Bria VRMBG 3.0 or FFmpeg chroma-key). */
+  video?: string;
+  /** Optional start offset in seconds for `video` playback (default 0). */
+  videoStart?: number;
+  /** Optional playback speed multiplier for `video` (default 1.0). */
+  videoPlaybackRate?: number;
   /** Horizontal anchor as fraction of width (0..1, default 0.5). */
   x?: number;
   /** Feet baseline vertical anchor as fraction of height (0..1, default 0.72). */
@@ -99,6 +105,10 @@ export type GlitchConfig = {
   scanlines?: boolean;
   /** Show subtle animated film grain over whole composition (default true). */
   grain?: boolean;
+  /** Drifting nocturnal street smoke / exhaust mist wrapping lower frame & character feet (default true). */
+  smoke?: boolean;
+  /** Silky dark/luminous dissolve feather across scene cut boundaries (default true). */
+  dissolve?: boolean;
 };
 
 export type ShortProps = {
