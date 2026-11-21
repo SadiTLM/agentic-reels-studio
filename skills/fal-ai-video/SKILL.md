@@ -21,6 +21,7 @@ Usa esta skill cuando necesites producir movimiento real fluido (caderas, giros 
 | Verificar entorno | `check` | *(local, 0 llamadas)* | \$0 |
 | Copiar baile 2D (Pro v3 + face binding) | `motion-transfer --model v3-pro` | `fal-ai/kling-video/v3/pro/motion-control` | \$0.168 / s |
 | Copiar baile 2D (Pro v2.6 económico) | `motion-transfer --model v2.6-pro` | `fal-ai/kling-video/v2.6/pro/motion-control` | \$0.112 / s |
+| Copiar baile 2D (Standard v2.6 ultra-económico) | `motion-transfer --model v2.6-std` | `fal-ai/kling-video/v2.6/standard/motion-control` | \$0.070 / s |
 | Copiar baile 2D (Standard v3) | `motion-transfer --model v3-std` | `fal-ai/kling-video/v3/standard/motion-control` | \$0.126 / s |
 | Recorte de video transparente VP9 | `remove-bg-video` | `bria/video/background-removal/v3` | \$0.050 / s |
 | Recorte local gratis (pantalla verde) | `chroma-key` | *(FFmpeg local `colorkey` + `despill`)* | \$0 |

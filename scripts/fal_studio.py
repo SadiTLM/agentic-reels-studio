@@ -55,6 +55,12 @@ MOTION_MODELS = {
         "supports_elements": False,
         "notes": "Kling v2.6 Pro Motion Control (ideal for complex dance moves and gestures, max 30s)",
     },
+    "v2.6-std": {
+        "endpoint": "fal-ai/kling-video/v2.6/standard/motion-control",
+        "price_per_sec": 0.07,
+        "supports_elements": False,
+        "notes": "Kling v2.6 Standard Motion Control (lowest-cost Kling motion transfer, $0.07/s, max 30s)",
+    },
 }
 
 VIDEO_BG_REMOVE_ENDPOINT = "bria/video/background-removal/v3"
@@ -145,7 +151,11 @@ def resolve_input_media(fal_client: Any, source: str, dry_run: bool) -> str:
     if dry_run:
         return f"<fal-upload:{p.name}>"
     print(f"Uploading {p.name} to fal storage...", file=sys.stderr)
-    return str(fal_client.upload_file(p))
+    try:
+        return str(fal_client.upload_file(p))
+    except Exception as exc:
+        handle_fal_http_error(exc, "fal-storage-upload")
+        raise
 
 
 def validate_fal_origin_url(url: str) -> None:
@@ -173,8 +183,17 @@ def save_job_record(out_path: Path, record: dict[str, Any]) -> Path:
 
 
 def handle_fal_http_error(exc: Exception, endpoint: str) -> None:
+    resp = getattr(exc, "response", None)
     status_code = getattr(exc, "status_code", None)
-    msg = str(exc)
+    if status_code is None and resp is not None:
+        status_code = getattr(resp, "status_code", None)
+    detail = ""
+    if resp is not None:
+        try:
+            detail = resp.text.strip()
+        except Exception:
+            detail = ""
+    msg = f"{exc}" + (f" | response: {detail}" if detail and detail not in str(exc) else "")
     if status_code == 403:
         if "exhausted balance" in msg.lower():
             sys.exit(
@@ -182,7 +201,8 @@ def handle_fal_http_error(exc: Exception, endpoint: str) -> None:
                 f"but the fal account needs credits. Top up at {CREDITS_URL} (do not retry until funded)."
             )
         sys.exit(
-            f"HTTP 403 from {endpoint} (account/policy lock — do not retry or replace key): {msg}"
+            f"HTTP 403 from {endpoint} (account/billing/policy block — do not retry or replace key): {msg}\n"
+            f"Check credits or account locks at {CREDITS_URL}"
         )
     sys.exit(f"fal API error on {endpoint} (status {status_code}): {msg}")
 
