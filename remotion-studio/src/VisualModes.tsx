@@ -393,13 +393,16 @@ export const ChibiDanceOverlay: React.FC<{
   const { fps } = useVideoConfig();
   const poses = chibi.poses ?? [];
   const hasVideo = Boolean(chibi.video);
-  if (!hasVideo && !poses.length) return null;
 
   const effectiveBpm = chibi.bpm ?? bpm ?? 155;
   const { beats, beatIndex, phase, hit } = beatMetrics(frame, fps, effectiveBpm);
 
   const sceneIdx = Math.max(0, layout.findIndex((l) => frame >= l.from && frame < l.from + l.frames));
   const curScene = scenes[sceneIdx];
+  const sceneCels = curScene?.cels ?? [];
+  const hasSceneCels = sceneCels.length > 0;
+  if (!hasVideo && !hasSceneCels && !poses.length) return null;
+
   const sceneAge = layout[sceneIdx] ? frame - layout[sceneIdx].from : 0;
   const bangSet = new Set<number>([
     ...(chibi.bangScene != null ? [chibi.bangScene] : []),
@@ -409,34 +412,51 @@ export const ChibiDanceOverlay: React.FC<{
   const bangStart = isBangScene && layout[sceneIdx] ? layout[sceneIdx].from : -999;
   const bangAge = frame - bangStart;
 
-  // Sprite fallback progression (only active when no 30fps transparent video is provided)
-  const danceCount = poses.length > 1 && bangSet.size > 0 ? poses.length - 1 : Math.max(1, poses.length);
-  const poseRate = chibi.poseRate ?? (danceCount >= 8 ? 2 : 1);
-  const stepFloat = beats * poseRate;
-  const stepIndex = Math.floor(stepFloat);
-  const stepPhase = stepFloat - stepIndex;
+  // Sakuga cel-sequence playback (per-scene exact hand-drawn animation frames at 7.5-10 fps)
+  // OR legacy global pose-pack fallback
+  let poseSrc = "";
+  let prevPoseSrc = "";
+  let crossfadeOp = 0;
 
-  const poseSrc = poses.length ? (isBangScene ? poses[poses.length - 1] : poses[stepIndex % danceCount]) : "";
-  const prevPoseSrc = poses.length
-    ? isBangScene
+  if (hasSceneCels) {
+    const celFps = Math.max(2, curScene?.celFps ?? 8);
+    const celFloat = (sceneAge / fps) * celFps;
+    const rawIdx = Math.floor(celFloat);
+    const celPhase = celFloat - rawIdx;
+    const loop = curScene?.celLoop !== false;
+    const idx = loop ? rawIdx % sceneCels.length : Math.min(sceneCels.length - 1, rawIdx);
+    const prevIdx = loop ? (idx - 1 + sceneCels.length) % sceneCels.length : Math.max(0, idx - 1);
+    poseSrc = sceneCels[idx];
+    prevPoseSrc = sceneCels[prevIdx];
+    // Crisp 1-frame anime smear ghost only when cel actually changes
+    crossfadeOp = poseSrc !== prevPoseSrc && celPhase < 0.24 ? interpolate(celPhase, [0, 0.24], [0.22, 0], CLAMP) : 0;
+  } else if (poses.length) {
+    const danceCount = poses.length > 1 && bangSet.size > 0 ? poses.length - 1 : Math.max(1, poses.length);
+    const poseRate = chibi.poseRate ?? (danceCount >= 8 ? 2 : 1);
+    const stepFloat = beats * poseRate;
+    const stepIndex = Math.floor(stepFloat);
+    const stepPhase = stepFloat - stepIndex;
+    poseSrc = isBangScene ? poses[poses.length - 1] : poses[stepIndex % danceCount];
+    prevPoseSrc = isBangScene
       ? poses[Math.max(0, stepIndex - 1) % danceCount]
-      : poses[(stepIndex - 1 + danceCount) % danceCount]
-    : "";
+      : poses[(stepIndex - 1 + danceCount) % danceCount];
+    crossfadeOp = !hasVideo && !isBangScene && stepPhase < 0.34 ? interpolate(stepPhase, [0, 0.34], [0.32, 0], CLAMP) : 0;
+  }
 
-  const crossfadeOp = !hasVideo && !isBangScene && stepPhase < 0.34 ? interpolate(stepPhase, [0, 0.34], [0.32, 0], CLAMP) : 0;
-
-  // When rendering a real 30fps motion-transfer dance video, preserve natural footwork & hip sway (only apply subtle camera bass pump + recoil)
-  const hop = hasVideo
+  // Grounded physics: when playing true hand-drawn Sakuga cel sequences or 30fps video, keep feet SOLIDLY PLANTED
+  // on the wet asphalt / car roof (ZERO artificial sticker bounce or floating!). Only apply subtle bass weight + recoil.
+  const grounded = hasVideo || hasSceneCels;
+  const hop = grounded
     ? 0
     : isBangScene
       ? Math.sin(phase * Math.PI) * 9
       : Math.pow(Math.abs(Math.sin(phase * Math.PI)), 0.72) * 26;
-  const grooveX = hasVideo || isBangScene ? 0 : Math.sin(beats * Math.PI * 0.5) * 34;
-  const squashX = hasVideo ? 1 : 1 + hit * 0.052;
-  const squashY = hasVideo ? 1 : 1 - hit * 0.044;
-  const cameraBassPump = 1 + hit * (hasVideo ? 0.016 : 0.022);
-  const swayDeg = hasVideo ? 0 : isBangScene ? -3.4 : Math.sin(beats * Math.PI * 0.5) * 4.4;
-  const skewDeg = hasVideo || isBangScene ? 0 : Math.cos(beats * Math.PI) * 2.8;
+  const grooveX = grounded || isBangScene ? 0 : Math.sin(beats * Math.PI * 0.5) * 34;
+  const squashX = grounded ? 1 + hit * 0.018 : 1 + hit * 0.052;
+  const squashY = grounded ? 1 - hit * 0.014 : 1 - hit * 0.044;
+  const cameraBassPump = 1 + hit * (grounded ? 0.014 : 0.022);
+  const swayDeg = grounded ? 0 : isBangScene ? -3.4 : Math.sin(beats * Math.PI * 0.5) * 4.4;
+  const skewDeg = grounded || isBangScene ? 0 : Math.cos(beats * Math.PI) * 2.8;
 
   // Recoil shake locked to camera on bang hits
   const shakeDecay = isBangScene ? Math.exp(-Math.max(0, bangAge) * 0.36) * (bangAge < 10 ? 1 : 0) : 0;
@@ -444,7 +464,7 @@ export const ChibiDanceOverlay: React.FC<{
   const shakeY = isBangScene ? Math.cos(bangAge * 3.4) * 12 * shakeDecay : 0;
 
   const bangPop = isBangScene
-    ? 1 + 0.15 * Math.exp(-Math.max(0, bangAge) * 0.24) * spring({ frame: bangAge, fps, config: { damping: 14, stiffness: 280 } })
+    ? 1 + 0.14 * Math.exp(-Math.max(0, bangAge) * 0.24) * spring({ frame: bangAge, fps, config: { damping: 14, stiffness: 280 } })
     : 1;
 
   // Rhythmic RGB glitch tear ON the character itself during cuts, bangs, and micro-glitch beats
@@ -461,16 +481,16 @@ export const ChibiDanceOverlay: React.FC<{
 
   const cx = (curScene?.chibiX ?? chibi.x ?? 0.5) * WIDTH + grooveX + shakeX + glitchJitterX;
   const bottomY = (curScene?.chibiY ?? chibi.y ?? 0.76) * HEIGHT + shakeY;
-  const spriteH = Math.round(520 * (curScene?.chibiScale ?? chibi.scale ?? 1));
+  const spriteH = Math.round(540 * (curScene?.chibiScale ?? chibi.scale ?? 1));
   const showShadow = chibi.shadow !== false;
 
   // Seamless Night-Atmosphere Color Grading & Optical Integration (eliminates harsh pasted contrast)
   const nightGrade = chibi.nightGrade !== false;
-  const bright = curScene?.chibiBrightness ?? (nightGrade ? 0.83 : 1.0);
-  const rimColor = curScene?.rimColor ?? "rgba(255, 130, 80, 0.38)";
+  const bright = curScene?.chibiBrightness ?? (nightGrade ? 0.85 : 1.0);
+  const rimColor = curScene?.rimColor ?? "rgba(255, 130, 80, 0.40)";
   const sceneTint = curScene?.sceneTint ?? "rgba(32, 68, 92, 0.22)";
   const spriteFilter = nightGrade
-    ? `brightness(${bright.toFixed(2)}) contrast(0.95) saturate(0.90) blur(0.45px) drop-shadow(0 0 8px ${rimColor}) drop-shadow(0 12px 18px rgba(0,0,0,0.72))`
+    ? `brightness(${bright.toFixed(2)}) contrast(0.96) saturate(0.92) blur(0.35px) drop-shadow(0 0 8px ${rimColor}) drop-shadow(0 12px 18px rgba(0,0,0,0.72))`
     : "drop-shadow(0 14px 22px rgba(0,0,0,0.62))";
 
   const transformMain = `translate(-50%, -100%) scale(${(squashX * bangPop * cameraBassPump).toFixed(4)}, ${(squashY * bangPop * cameraBassPump).toFixed(4)}) rotate(${swayDeg.toFixed(2)}deg) skewX(${skewDeg.toFixed(2)}deg)`;
@@ -493,12 +513,13 @@ export const ChibiDanceOverlay: React.FC<{
       <Img src={staticFile(overrideSrc ?? poseSrc)} style={mediaStyle} />
     );
 
-  // Cracked-glass bullet-hole impact + warm muzzle spark on bang hits
-  const flashOp = isBangScene ? interpolate(bangAge, [0, 2, 10], [0.3, 0.16, 0], CLAMP) : 0;
-  const crackOp = isBangScene ? interpolate(bangAge, [0, 2, 22, 32], [0.92, 0.88, 0.68, 0], CLAMP) : 0;
+  // Cracked-glass bullet-hole impact + warm muzzle spark aligned with finger-gun direction (left or right)
+  const flashOp = isBangScene ? interpolate(bangAge, [0, 2, 10], [0.34, 0.18, 0], CLAMP) : 0;
+  const crackOp = isBangScene ? interpolate(bangAge, [0, 2, 22, 32], [0.94, 0.88, 0.68, 0], CLAMP) : 0;
   const crackScale = isBangScene ? interpolate(bangAge, [0, 4, 18], [0.55, 1.08, 1.18], CLAMP) : 0.55;
-  const burstX = cx - spriteH * 0.42;
-  const burstY = bottomY - spriteH * 0.64;
+  const dirSign = curScene?.bangSide === "right" ? 1 : -1;
+  const burstX = cx + dirSign * spriteH * 0.40;
+  const burstY = bottomY - spriteH * 0.58;
 
   return (
     <AbsoluteFill style={{ pointerEvents: "none" }}>
@@ -506,7 +527,7 @@ export const ChibiDanceOverlay: React.FC<{
       {flashOp > 0.01 ? (
         <AbsoluteFill
           style={{
-            background: "radial-gradient(circle at 38% 58%, rgba(255,240,210,0.8) 0%, rgba(255,120,70,0.22) 45%, rgba(0,0,0,0) 75%)",
+            background: `radial-gradient(circle at ${dirSign > 0 ? "64%" : "36%"} 56%, rgba(255,240,210,0.82) 0%, rgba(255,120,70,0.22) 45%, rgba(0,0,0,0) 75%)`,
             opacity: flashOp,
           }}
         />
@@ -562,11 +583,11 @@ export const ChibiDanceOverlay: React.FC<{
             style={{
               position: "absolute",
               left: cx,
-              top: bottomY - 6,
+              top: bottomY - 8,
               height: spriteH,
               transform: `translate(-50%, 0) scaleY(-0.56) scaleX(${(squashX * bangPop * cameraBassPump).toFixed(4)}) rotate(${swayDeg.toFixed(2)}deg)`,
               transformOrigin: "top center",
-              opacity: 0.24,
+              opacity: 0.25,
               filter: `brightness(0.75) blur(4px) drop-shadow(0 0 10px ${rimColor})`,
               maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0) 68%)",
               WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0) 68%)",
@@ -577,17 +598,17 @@ export const ChibiDanceOverlay: React.FC<{
         </>
       ) : null}
 
-      {/* Motion-blur ghost of previous pose for sprite-pack fallback */}
+      {/* Crisp 1-frame anime motion-smear ghost on cel change */}
       {crossfadeOp > 0.02 && prevPoseSrc ? (
         <div
           style={{
             position: "absolute",
-            left: cx - Math.cos(beats * Math.PI * 0.5) * 6,
+            left: cx,
             top: bottomY - hop,
             transform: transformMain,
             transformOrigin: "bottom center",
             opacity: crossfadeOp,
-            filter: `brightness(${bright.toFixed(2)}) blur(2.2px)`,
+            filter: `brightness(${bright.toFixed(2)}) blur(1.8px)`,
           }}
         >
           {renderCharacter(prevPoseSrc)}
@@ -628,7 +649,7 @@ export const ChibiDanceOverlay: React.FC<{
         </>
       ) : null}
 
-      {/* Main night-graded animated character (30fps alpha video or sprite fallback) */}
+      {/* Main night-graded animated character (Sakuga cels, 30fps alpha video, or pose fallback) */}
       <div
         style={{
           position: "absolute",
@@ -667,11 +688,12 @@ export const ChibiDanceOverlay: React.FC<{
  */
 export const GlitchPostFX: React.FC<{
   config: GlitchConfig;
+  scenes?: Scene[];
   layout: SceneLayout[];
   bangScenes: number[];
   bpm: number;
   accent: string;
-}> = ({ config, layout, bangScenes, bpm, accent }) => {
+}> = ({ config, scenes = [], layout, bangScenes, bpm, accent }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -680,6 +702,7 @@ export const GlitchPostFX: React.FC<{
 
   const sceneIdx = Math.max(0, layout.findIndex((l) => frame >= l.from && frame < l.from + l.frames));
   const curLayout = layout[sceneIdx];
+  const curScene = scenes[sceneIdx];
   const sceneAge = curLayout ? frame - curLayout.from : 0;
   const sceneRem = curLayout ? curLayout.from + curLayout.frames - frame : 99;
   const isBang = bangScenes.includes(sceneIdx) && sceneAge < 11;
@@ -690,6 +713,10 @@ export const GlitchPostFX: React.FC<{
   const glitchActive = (isBang || isCut || isBeatBug || isMicroFlicker) && intensity > 0.05;
   const burstStrength = isBang ? 1.0 : isCut ? 0.92 : isBeatBug ? 0.62 : 0.42;
   const eff = burstStrength * intensity;
+
+  // #35-style radial RGB prism speed-ramp warp right at the end of prismOut scenes
+  const prismOp = curScene?.prismOut && sceneRem <= 7 ? interpolate(sceneRem, [0, 7], [0.92, 0], CLAMP) : 0;
+  const prismScale = curScene?.prismOut && sceneRem <= 7 ? interpolate(sceneRem, [0, 7], [1.45, 0.72], CLAMP) : 1;
 
   // Silky dark + neon light-leak dissolve feather across scene cut boundaries
   const dissolveIn = sceneIdx > 0 && sceneAge < 6 ? interpolate(sceneAge, [0, 6], [0.58, 0], CLAMP) : 0;
@@ -850,6 +877,22 @@ export const GlitchPostFX: React.FC<{
         <AbsoluteFill
           style={{
             boxShadow: `inset ${(6 * hit).toFixed(1)}px 0 18px rgba(0,245,255,${(0.18 * intensity).toFixed(2)}), inset ${(-6 * hit).toFixed(1)}px 0 18px rgba(255,40,105,${(0.18 * intensity).toFixed(2)})`,
+          }}
+        />
+      ) : null}
+
+      {/* 8. #35-style Radial RGB Prism Tunnel Speed-Ramp Warp */}
+      {prismOp > 0.02 ? (
+        <AbsoluteFill
+          style={{
+            background:
+              "conic-gradient(from 0deg at 50% 52%, rgba(255,40,105,0.85), rgba(255,215,0,0.8), rgba(0,255,180,0.85), rgba(0,210,255,0.9), rgba(145,55,255,0.85), rgba(255,40,105,0.85))",
+            maskImage: "radial-gradient(circle at 50% 52%, rgba(0,0,0,0) 10%, rgba(0,0,0,0.95) 42%, rgba(0,0,0,1) 100%)",
+            WebkitMaskImage: "radial-gradient(circle at 50% 52%, rgba(0,0,0,0) 10%, rgba(0,0,0,0.95) 42%, rgba(0,0,0,1) 100%)",
+            mixBlendMode: "screen",
+            filter: "blur(14px) saturate(1.8)",
+            transform: `scale(${prismScale.toFixed(3)}) rotate(${(frame * 12) % 360}deg)`,
+            opacity: prismOp,
           }}
         />
       ) : null}

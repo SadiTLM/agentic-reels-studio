@@ -1,0 +1,44 @@
+{
+  "song": "9mm",
+  "artist": "Memphis Cult, Groove Dealers, SPLYXER",
+  "instagram_audio_search": "9mm Memphis Cult, Groove Dealers, SPLYXER",
+  "start_second": 0.0,
+  "start_timestamp": "0:00",
+  "bpm": 155.0,
+  "video_duration_s": 13.87,
+  "files": {
+    "preview_with_audio": "reel_con_audio.mp4",
+    "upload_without_audio": "reel_sin_sonido.mp4"
+  },
+  "reference_audio_used": "ref35_audio.mp3",
+  "cuts": [
+    {
+      "at": 0.0,
+      "label": "Porsche GT3 RS Sway & Arm Pop"
+    },
+    {
+      "at": 1.85,
+      "label": "Neon Alley Back-View Turn & Crouch Windup"
+    },
+    {
+      "at": 3.95,
+      "label": "BANG #1 Ferrari Crimson Dock Shatter"
+    },
+    {
+      "at": 5.05,
+      "label": "Skyline R34 Roof Bounce Groove"
+    },
+    {
+      "at": 8.05,
+      "label": "GT3 RS Spin Flash + RGB Prism Tunnel"
+    },
+    {
+      "at": 9.95,
+      "label": "BANG #2 Close-Up Neon Alley Shatter"
+    },
+    {
+      "at": 11.15,
+      "label": "Crimson Dock Outro Strut"
+    }
+  ]
+}

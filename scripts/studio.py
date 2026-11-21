@@ -409,6 +409,8 @@ def cmd_produce(args: argparse.Namespace) -> int:
     for sc in short_spec.get("scenes", []):
         if sc.get("image"):
             sc["image"] = _resolve_asset(sc["image"])
+        if isinstance(sc.get("cels"), list):
+            sc["cels"] = [_resolve_asset(c) for c in sc["cels"]]
 
     save_json(short_json_path, short_spec)
 

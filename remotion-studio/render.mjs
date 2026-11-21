@@ -103,9 +103,19 @@ if (props.rig) {
   }
   props.rig = nextRig;
 }
-(props.scenes ?? []).forEach((s, i) => (s.image = bring(s.image, `scenes[${i}].image`)));
+const sceneCelFiles = [];
+(props.scenes ?? []).forEach((s, i) => {
+  s.image = bring(s.image, `scenes[${i}].image`);
+  if (Array.isArray(s.cels)) {
+    s.cels = s.cels.map((c, j) => {
+      const staged = bring(c, `scenes[${i}].cels[${j}]`);
+      sceneCelFiles.push(staged);
+      return staged;
+    });
+  }
+});
 // Keep this short's asset folder to the files it uses now.
-const used = new Set([props.music?.src, props.background, props.chibi?.video, ...(props.chibi?.poses ?? []), ...rigPartFiles, ...(props.scenes ?? []).map((s) => s.image)].filter(Boolean).map((p) => path.basename(p)));
+const used = new Set([props.music?.src, props.background, props.chibi?.video, ...(props.chibi?.poses ?? []), ...rigPartFiles, ...sceneCelFiles, ...(props.scenes ?? []).map((s) => s.image)].filter(Boolean).map((p) => path.basename(p)));
 if (fs.existsSync(assetsDir)) for (const f of fs.readdirSync(assetsDir)) if (!used.has(f)) fs.rmSync(path.join(assetsDir, f), { force: true });
 
 const t0 = Date.now();

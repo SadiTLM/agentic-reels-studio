@@ -400,7 +400,7 @@ export const Short: React.FC<ShortProps & { guides?: boolean; mute?: boolean }> 
         <BandidaRigOverlay rig={props.rig} scenes={props.scenes} layout={layout} bpm={effectiveBpm} accent={theme.accent} />
       ) : null}
       {glitchConfig ? (
-        <GlitchPostFX config={glitchConfig} layout={layout} bangScenes={bangScenesList} bpm={effectiveBpm} accent={theme.accent} />
+        <GlitchPostFX config={glitchConfig} scenes={props.scenes} layout={layout} bangScenes={bangScenesList} bpm={effectiveBpm} accent={theme.accent} />
       ) : null}
       {props.watermark ? <SubtleWatermark text={props.watermark} /> : null}
       {props.visualMode === "timeline" ? (

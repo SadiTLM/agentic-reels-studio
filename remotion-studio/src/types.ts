@@ -43,6 +43,16 @@ export type Scene = {
   rimColor?: string;
   /** Per-scene chibi exposure multiplier (e.g. 0.78-0.90 for dark night scenes). */
   chibiBrightness?: number;
+  /** Per-scene ordered sakuga anime cel frames (played sequentially at celFps for true hand-drawn motion). */
+  cels?: string[];
+  /** Playback cadence for scene.cels in frames/sec (default 8, true anime 'on threes/fours'). */
+  celFps?: number;
+  /** Whether scene.cels loops or holds the last cel (default true). */
+  celLoop?: boolean;
+  /** Direction of finger-gun muzzle for BANG! glass shatter placement ('left' | 'right'). */
+  bangSide?: "left" | "right";
+  /** Trigger #35-style radial RGB prism tunnel speed-ramp warp on the final 6 frames of this scene. */
+  prismOut?: boolean;
 };
 
 export type Theme = {

@@ -284,6 +284,11 @@ class TestAgenticReelsStudio(unittest.TestCase):
         self.assertEqual(nb.get("nbformat"), 4)
         self.assertGreaterEqual(len(nb.get("cells", [])), 5)
 
+        sakuga_dir = ROOT / "brand" / "assets" / "bandida-sakuga"
+        for prefix in ("sway", "bang"):
+            for i in range(1, 9):
+                self.assertTrue((sakuga_dir / f"{prefix}_{i:02d}.png").exists(), f"Missing Sakuga cel: {prefix}_{i:02d}.png")
+
 
 if __name__ == "__main__":
     unittest.main()

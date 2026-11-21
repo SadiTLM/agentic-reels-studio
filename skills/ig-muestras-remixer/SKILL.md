@@ -22,10 +22,10 @@ Identifica el **BPM real**, los cortes exactos al beat y el segundo exacto del i
    ```bash
    python3 scripts/sprite_prep.py extract-dance baile_ref.mp4 --fps 3 --max-frames 16 --out /tmp/baile_poses
    ```
-   - **Motor 100% gratis local 30fps Live2D (`rig` + `scripts/pose_track.py`):** Extrae 33 puntos reales del cuerpo frame a frame con MediaPipe Pose desde cualquier baile de `Muestras` (`python3 scripts/pose_track.py baile.mp4 --out motion.json`) y anima piezas anime 2D independientes (`brand/assets/bandida-rig/`: cabeza guiño/normal, cabello trasero con inercia, torso, corbata con física, mochila 2.5D, falda, brazos y piernas de 2 huesos) a 30fps continuos + **humo nocturno** (`smoke: true`), **desvanecimientos en cortes** (`dissolve: true`), glitch RGB y `BANG!`.
+   - **Motor 100% gratis Sakuga Frame-Matched (`scenes[].cels` + `celFps` + `prismOut`):** Extrae cuadrículas 4×2 consecutivas de un clip de referencia (ej. `#35`), redibuja secuencias cerradas de 8–16 cels anime completos y coherentes (`brand/assets/bandida-sakuga/`: frente, vuelta de espalda mostrando mochila, agachado, giro 180° a finger-gun y recoil `BANG!`, sin recortes de marioneta), estabilizados por base de pies y reproducidos a **7.5–9 fps** con pies firmes al suelo/techo del auto, **túnel prisma RGB radial** (`prismOut: true`), humo nocturno, desvanecimientos y glitch.
    - **Motor 100% gratis en GPU T4 (`notebooks/bandida_colab_motion_t4.ipynb`):** Notebook 1-clic para Google Colab (MimicMotion + FFmpeg chroma-key -> `.webm` VP9 alfa) compatible directo con `chibi.video` en Remotion.
-   - **Motor API de pago (`scripts/fal_studio.py` + skill `fal-ai-video`):** Kling Motion Control + Bria VRMBG 3.0 -> `.webm` VP9 alfa directo en `chibi.video`.
-   - **Fallback multi-pose (`chibi.poses`):** 8–12 poses con `poseRate: 2`, `nightGrade: true` y `GlitchPostFX`.
+   - **Motor API Cloud (`scripts/fal_studio.py` + skill `fal-ai-video`):** Kling Motion Control + Bria VRMBG 3.0 -> `.webm` VP9 alfa directo en `chibi.video`.
+   - **Experimental MediaPipe Rig (`rig` + `scripts/pose_track.py`):** Captura de 33 puntos en CPU para prototipos rápidos.
 
 ## 3. Exportación Dual Obligatoria (Con Sonido + Sin Sonido + Canción y Segundo)
 ```bash
