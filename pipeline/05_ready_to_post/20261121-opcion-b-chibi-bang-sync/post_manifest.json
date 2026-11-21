@@ -1,0 +1,82 @@
+{
+  "id": "20261121-opcion-b-chibi-bang-sync",
+  "title": "Midnight Shift — Chibi 9mm (155 BPM Pure Visual)",
+  "format": "reel",
+  "project_ref": "agentic-reels-studio",
+  "handle": "@saditlm",
+  "video_file": "reel.mp4",
+  "video_with_audio": "reel_con_audio.mp4",
+  "video_without_audio": "reel_sin_sonido.mp4",
+  "audio_sync_guide": "AUDIO_SYNC.md",
+  "audio_sync": {
+    "song": "9mm",
+    "artist": "Memphis Cult, Groove Dealers, SPLYXER",
+    "instagram_audio_search": "Memphis Cult 9mm",
+    "start_second": 0.0,
+    "start_timestamp": "0:00",
+    "bpm": 155.0,
+    "video_duration_s": 13.87,
+    "files": {
+      "preview_with_audio": "reel_con_audio.mp4",
+      "upload_without_audio": "reel_sin_sonido.mp4"
+    },
+    "reference_audio_used": "ref35_audio.mp3",
+    "cuts": [
+      {
+        "at": 0.0,
+        "label": "visual #1"
+      },
+      {
+        "at": 1.87,
+        "label": "visual #2"
+      },
+      {
+        "at": 3.97,
+        "label": "visual #3"
+      },
+      {
+        "at": 5.07,
+        "label": "visual #4"
+      },
+      {
+        "at": 8.07,
+        "label": "visual #5"
+      },
+      {
+        "at": 9.97,
+        "label": "visual #6"
+      },
+      {
+        "at": 11.17,
+        "label": "visual #7"
+      }
+    ]
+  },
+  "cover_file": "cover.jpg",
+  "caption_file": "caption.txt",
+  "caption": "Midnight shift, 9mm sobre asfalto mojado.\n\n#chibi #jdm #motiondesign #nightdrive",
+  "share_to_feed": true,
+  "packaged_at": "2026-11-21T17:32:31Z",
+  "approved": true,
+  "copy_audit": {
+    "human_score": 62.0,
+    "human_verdict": "REVIEW",
+    "caption_verdict": "REVIEW",
+    "caption_chars": 80,
+    "hashtags": [
+      "#chibi",
+      "#jdm",
+      "#motiondesign",
+      "#nightdrive"
+    ],
+    "visible_125": "Midnight shift, 9mm sobre asfalto mojado.\n\n#chibi #jdm #motiondesign #nightdrive",
+    "audited_at": "2026-11-21T17:28:10Z"
+  },
+  "goldfish_review": {
+    "status": "reviewed",
+    "score": 94,
+    "verdict": "pass",
+    "notes": "Voice pass: pure visual, 0 CTAs/guru text, 41c caption, 4 tags. 4 chibi PNGs + 4 car JPGs ok. Exact 13.85s; bangScenes [2,5] at 3.95s & 9.95s. chibiY nudged to 0.75-0.77 safe zone.",
+    "reviewed_at": "2026-11-21T17:30:29Z"
+  }
+}

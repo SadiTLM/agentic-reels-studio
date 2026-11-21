@@ -68,7 +68,7 @@ const bring = (src, what) => {
   return `assets/${path.basename(assetsDir)}/${dest}`;
 };
 // Remotion merges the Studio sample's props under these; null every option this file leaves out.
-for (const k of ["theme", "font", "fps", "pace", "bpm", "music", "background", "backdropDim", "visualMode", "chibi", "footer", "handle", "highlightStyle", "progress", "sfx", "sfxVolume"]) {
+for (const k of ["theme", "font", "fps", "pace", "bpm", "exactTiming", "music", "background", "backdropDim", "visualMode", "chibi", "watermark", "footer", "handle", "highlightStyle", "progress", "sfx", "sfxVolume"]) {
   if (!(k in props)) props[k] = null;
 }
 if (flag("--mute")) props.mute = true;

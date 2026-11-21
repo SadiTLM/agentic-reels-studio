@@ -82,6 +82,9 @@ class TestAgenticReelsStudio(unittest.TestCase):
         chibi_dir = ROOT / "brand" / "assets" / "chibi-racer"
         for i in range(1, 5):
             self.assertTrue((chibi_dir / f"pose_{i:02d}.png").exists())
+        backdrops_dir = ROOT / "brand" / "assets" / "backdrops"
+        for name in ("porsche-gt3-rain.jpg", "neon-alley-coupe.jpg", "ferrari-crimson-dock.jpg", "skyline-overpass.jpg"):
+            self.assertTrue((backdrops_dir / name).exists())
 
     def test_sprite_prep_preserves_interior_white_and_removes_exterior_bg(self):
         import tempfile

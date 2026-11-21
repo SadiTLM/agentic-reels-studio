@@ -1,4 +1,4 @@
-export type SceneType = "hook" | "text" | "stat" | "item" | "quote" | "end";
+export type SceneType = "hook" | "text" | "stat" | "item" | "quote" | "end" | "visual";
 
 export type Scene = {
   type: SceneType;
@@ -26,6 +26,17 @@ export type Scene = {
   image?: string;
   /** Override the computed on-screen time. */
   seconds?: number;
+  /** visual scene camera zoom start/end (defaults 1.09 -> 1.02). */
+  zoomFrom?: number;
+  zoomTo?: number;
+  /** visual scene gentle horizontal camera pan in pixels. */
+  panX?: number;
+  /** Per-scene chibi horizontal anchor override (0..1). */
+  chibiX?: number;
+  /** Per-scene chibi vertical feet baseline override (0..1). */
+  chibiY?: number;
+  /** Per-scene chibi scale multiplier override. */
+  chibiScale?: number;
 };
 
 export type Theme = {
@@ -65,8 +76,10 @@ export type ChibiConfig = {
   bpm?: number;
   /** Render ground shadow & wet floor reflection (default true). */
   shadow?: boolean;
-  /** 0-based scene index that triggers the final 'bang!' pose + impact VFX. */
+  /** Single 0-based scene index that triggers the final 'bang!' pose + impact VFX. */
   bangScene?: number;
+  /** Array of 0-based scene indices that trigger 'bang!' pose + glass shatter + recoil shake. */
+  bangScenes?: number[];
 };
 
 export type ShortProps = {
@@ -75,8 +88,10 @@ export type ShortProps = {
   fps?: number | null;
   /** 1 is normal. Above 1 is faster, below 1 slower. */
   pace?: number | null;
-  /** Snap every cut to the beat of the music. */
+  /** Snap every cut to the beat of the music (unless exactTiming is true). */
   bpm?: number | null;
+  /** Preserve exact scene.seconds cut timestamps instead of rounding to BPM grid. */
+  exactTiming?: boolean | null;
   music?: { src: string; volume?: number; start?: number } | null;
   /** Photo or looping video behind every scene. */
   background?: string | null;
@@ -86,6 +101,8 @@ export type ShortProps = {
   visualMode?: VisualMode | null;
   /** Option B beat-synced chibi/anime dance overlay configuration. */
   chibi?: ChibiConfig | null;
+  /** Optional understated editorial signature watermark (e.g. "saditlm"). */
+  watermark?: string | null;
   /** Small credit line, e.g. "Data: USGS". */
   footer?: string | null;
   /** Shown on the end scene, e.g. "@yourhandle". */

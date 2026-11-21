@@ -1,0 +1,32 @@
+{
+  "brand": {
+    "name": "Josué D. · SadiTLM",
+    "handle": "@saditlm"
+  },
+  "timezone": "America/Mexico_City",
+  "accounts": {
+    "main": {
+      "handle": "@saditlm",
+      "timezone": "America/Mexico_City",
+      "times": [
+        "19:00"
+      ]
+    }
+  },
+  "posts": [
+    {
+      "id": "20261121-opcion-b-chibi-bang-sync",
+      "format": "reel",
+      "media": [
+        "reel.mp4"
+      ],
+      "cover": "cover.jpg",
+      "caption": "Midnight shift, 9mm sobre asfalto mojado.\n\n#chibi #jdm #motiondesign #nightdrive",
+      "targets": [
+        {
+          "account": "main"
+        }
+      ]
+    }
+  ]
+}

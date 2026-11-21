@@ -23,4 +23,6 @@ remotion-studio/public/assets/*
 # Optional large raw scratch media (rendered outputs go to pipeline/ or site/assets/)
 *.mov
 *.raw
+# Local preview renders muxed with copyrighted reference tracks (never commit to GitHub)
+reel_con_audio.mp4
 .DS_Store

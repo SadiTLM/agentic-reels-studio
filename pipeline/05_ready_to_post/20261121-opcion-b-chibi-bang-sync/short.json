@@ -1,0 +1,113 @@
+{
+  "theme": {
+    "bg": "#06080D",
+    "fg": "#FFFFFF",
+    "accent": "#E05A36",
+    "accentText": "#FFFFFF",
+    "font": "Inter",
+    "uppercase": false
+  },
+  "bpm": 155,
+  "exactTiming": true,
+  "backdropDim": 0,
+  "sfx": false,
+  "watermark": "saditlm",
+  "footer": null,
+  "handle": null,
+  "chibi": {
+    "poses": [
+      "../../../brand/assets/chibi-racer/pose_01.png",
+      "../../../brand/assets/chibi-racer/pose_02.png",
+      "../../../brand/assets/chibi-racer/pose_03.png",
+      "../../../brand/assets/chibi-racer/pose_04.png"
+    ],
+    "x": 0.5,
+    "y": 0.76,
+    "scale": 0.96,
+    "bpm": 155,
+    "shadow": true,
+    "bangScenes": [
+      2,
+      5
+    ]
+  },
+  "scenes": [
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/porsche-gt3-rain.jpg",
+      "seconds": 1.85,
+      "zoomFrom": 1.07,
+      "zoomTo": 1.13,
+      "panX": 24,
+      "chibiX": 0.5,
+      "chibiY": 0.77,
+      "chibiScale": 0.94
+    },
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/neon-alley-coupe.jpg",
+      "seconds": 2.1,
+      "zoomFrom": 1.11,
+      "zoomTo": 1.03,
+      "panX": -28,
+      "chibiX": 0.56,
+      "chibiY": 0.75,
+      "chibiScale": 0.98
+    },
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/ferrari-crimson-dock.jpg",
+      "seconds": 1.1,
+      "zoomFrom": 1.14,
+      "zoomTo": 1.05,
+      "panX": 0,
+      "chibiX": 0.55,
+      "chibiY": 0.76,
+      "chibiScale": 1.04
+    },
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/skyline-overpass.jpg",
+      "seconds": 3.0,
+      "zoomFrom": 1.04,
+      "zoomTo": 1.12,
+      "panX": 30,
+      "chibiX": 0.46,
+      "chibiY": 0.76,
+      "chibiScale": 0.96
+    },
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/porsche-gt3-rain.jpg",
+      "seconds": 1.9,
+      "zoomFrom": 1.13,
+      "zoomTo": 1.04,
+      "panX": -26,
+      "chibiX": 0.52,
+      "chibiY": 0.77,
+      "chibiScale": 1.0
+    },
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/neon-alley-coupe.jpg",
+      "seconds": 1.2,
+      "zoomFrom": 1.15,
+      "zoomTo": 1.06,
+      "panX": 0,
+      "chibiX": 0.54,
+      "chibiY": 0.75,
+      "chibiScale": 1.06
+    },
+    {
+      "type": "visual",
+      "image": "../../../brand/assets/backdrops/ferrari-crimson-dock.jpg",
+      "seconds": 2.7,
+      "zoomFrom": 1.05,
+      "zoomTo": 1.13,
+      "panX": -22,
+      "chibiX": 0.5,
+      "chibiY": 0.77,
+      "chibiScale": 0.98
+    }
+  ]
+}

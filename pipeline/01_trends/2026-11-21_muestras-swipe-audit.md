@@ -30,7 +30,7 @@ Las referencias exactas mencionadas por Josué (**"la niña que baila bang enfre
 
 | # | Archivo / Cuenta | Duración | Señales Observadas en Pantalla | Canción / Audio Detectado | BPM Est. | Técnica Replicable en Studio |
 |---|---|---|---|---|---|---|
-| 35 | `@shotbykusa` (`05-43-54_1.MP4`) | 14.0s | *"Watch my 9mm go, 'bang!'"* — Chibi anime bailando frente a deportivos + reflejo en piso + impacto/disparo al 4.2s + zoom RGB al 7.9s | `Memphis Cult, Groove Dealers, SPLYXER · 9mm` | **148 BPM** | `chibi` overlay en Remotion + `sprite_prep.py` + `bangScene` VFX |
+| 35 | `@shotbykusa` (`05-43-54_1.MP4`) | 14.0s | *"Watch my 9mm go, 'bang!'"* — Chibi anime bailando frente a deportivos + reflejo en piso + impacto/disparo al 3.95s y 9.95s + zoom RGB al 8.05s | `Memphis Cult, Groove Dealers, SPLYXER · 9mm` | **155 BPM** | `type: "visual"` + `chibi` overlay en Remotion + `sprite_prep.py` + `bangScenes: [2, 5]` VFX |
 | 33 | `@sinnerm3` (`05-41-45_1.MP4`) | 17.3s | 4,170 guardados — Chibi anime corriendo/bailando frente a VW/BMW | Phonk / beat rápido | **148 BPM** | Misma arquitectura `chibi` + cortes rápidos de autos/escenas |
 | 34 | `@d2_shots` (`05-42-27_1.MP4`) | 15.1s | 4,029 guardados, 3,878 reposts — Chibi bailando sobre GT-R y supercars | Phonk / beat rápido | **157 BPM** | Chibi anclado por escena con sombra realista |
 | 03 | `@gamstergaming` (`04-18-12_1.MP4`) | 27.0s | 12.7 mil guardados, 6,031 reposts — Avatar chibi 2D/VRM bailando (Just Dance) | Pop / trap rítmico | 91 BPM | Transferencia de baile (requiere motion-capture/V2V para 30fps fluido) |
@@ -52,7 +52,7 @@ Las referencias exactas mencionadas por Josué (**"la niña que baila bang enfre
 
 | Track en Audio de Instagram | Referencia | BPM Medido | Duración Ideal | Uso Recomendado |
 |---|---|---|---|---|
-| `Memphis Cult, Groove Dealers, SPLYXER · 9mm` | `#35 @shotbykusa` | **148 BPM** | 12–15s | **Opción B** Chibi "Bang!" + cortes rápidos (golpe fuerte a ~3.7–4.2s) |
+| `Memphis Cult, Groove Dealers, SPLYXER · 9mm` | `#35 @shotbykusa` | **155 BPM** | 13.85s | **Opción B** Chibi "Bang!" + cortes rápidos (golpes exactos en `3.95s` y `9.95s`) |
 | `D A N N Y · TAKE ME` | `#36 @cal1star` | **115 BPM** | 14–16s | **Opción A** Timeline Split-Screen / Pipeline agéntico al beat |
 | `Hans Zimmer · Mountains` | `#39 @nebula.galaxies` | **121 BPM** | 9–14s | **Opción A** Red de partículas / revelación técnica con tensión creciente |
 | `JMSN · Love Me` | `#15 @asbjorg_n` | **80 BPM** | 11–14s | **Opción A** Texto cinético grande sincronizado al drop |

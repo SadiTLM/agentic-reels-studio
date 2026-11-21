@@ -1,0 +1,186 @@
+{
+  "id": "20261121-opcion-b-chibi-bang-sync",
+  "title": "Midnight Shift — Chibi 9mm (155 BPM Pure Visual)",
+  "topic": "Pieza visual limpia estilo chibi anime bailando al beat de 9mm frente a 4 deportivos nocturnos",
+  "format": "reel",
+  "style_option": "B-clean",
+  "project_ref": "agentic-reels-studio",
+  "handle": "@saditlm",
+  "created_at": "2026-11-21T17:27:00Z",
+  "status": "ready_to_post",
+  "hooks": [
+    {
+      "text": "Visual-first opening: Porsche 911 GT3 RS en lluvia nocturna + chibi al beat de 155 BPM.",
+      "score": null,
+      "verdict": null
+    }
+  ],
+  "selected_hook_index": 0,
+  "spoken_script": "",
+  "caption": "Midnight shift, 9mm sobre asfalto mojado.\n\n#chibi #jdm #motiondesign #nightdrive",
+  "keywords": [
+    "chibi",
+    "jdm",
+    "motiondesign"
+  ],
+  "audio_sync": {
+    "song": "9mm",
+    "artist": "Memphis Cult, Groove Dealers, SPLYXER",
+    "ig_query": "Memphis Cult 9mm",
+    "start_second": 0.0,
+    "bpm": 155,
+    "ref_audio": "/tmp/ref35_audio.mp3",
+    "notes": "Sincronizado al clip viral de Instagram (0:00). El primer golpe 'bang!' cae exacto en 3.95s y el segundo en 9.95s.",
+    "reference_sample": "ScreenRecording_11-21-2026 05-43-54_1.MP4 (#35 @shotbykusa)"
+  },
+  "short_spec": {
+    "theme": {
+      "bg": "#06080D",
+      "fg": "#FFFFFF",
+      "accent": "#E05A36",
+      "accentText": "#FFFFFF",
+      "font": "Inter",
+      "uppercase": false
+    },
+    "bpm": 155,
+    "exactTiming": true,
+    "backdropDim": 0,
+    "sfx": false,
+    "watermark": "saditlm",
+    "footer": null,
+    "handle": null,
+    "chibi": {
+      "poses": [
+        "brand/assets/chibi-racer/pose_01.png",
+        "brand/assets/chibi-racer/pose_02.png",
+        "brand/assets/chibi-racer/pose_03.png",
+        "brand/assets/chibi-racer/pose_04.png"
+      ],
+      "x": 0.5,
+      "y": 0.76,
+      "scale": 0.96,
+      "bpm": 155,
+      "shadow": true,
+      "bangScenes": [
+        2,
+        5
+      ]
+    },
+    "scenes": [
+      {
+        "type": "visual",
+        "image": "brand/assets/backdrops/porsche-gt3-rain.jpg",
+        "seconds": 1.85,
+        "zoomFrom": 1.07,
+        "zoomTo": 1.13,
+        "panX": 24,
+        "chibiX": 0.5,
+        "chibiY": 0.77,
+        "chibiScale": 0.94
+      },
+      {
+        "type": "visual",
+        "image": "brand/assets/backdrops/neon-alley-coupe.jpg",
+        "seconds": 2.1,
+        "zoomFrom": 1.11,
+        "zoomTo": 1.03,
+        "panX": -28,
+        "chibiX": 0.56,
+        "chibiY": 0.75,
+        "chibiScale": 0.98
+      },
+      {
+        "type": "visual",
+        "image": "brand/assets/backdrops/ferrari-crimson-dock.jpg",
+        "seconds": 1.1,
+        "zoomFrom": 1.14,
+        "zoomTo": 1.05,
+        "panX": 0,
+        "chibiX": 0.55,
+        "chibiY": 0.76,
+        "chibiScale": 1.04
+      },
+      {
+        "type": "visual",
+        "image": "brand/assets/backdrops/skyline-overpass.jpg",
+        "seconds": 3.0,
+        "zoomFrom": 1.04,
+        "zoomTo": 1.12,
+        "panX": 30,
+        "chibiX": 0.46,
+        "chibiY": 0.76,
+        "chibiScale": 0.96
+      },
+      {
+        "type": "visual",
+        "image": "brand/assets/backdrops/porsche-gt3-rain.jpg",
+        "seconds": 1.9,
+        "zoomFrom": 1.13,
+        "zoomTo": 1.04,
+        "panX": -26,
+        "chibiX": 0.52,
+        "chibiY": 0.77,
+        "chibiScale": 1.0
+      },
+      {
+        "type": "visual",
+        "image": "brand/assets/backdrops/neon-alley-coupe.jpg",
+        "seconds": 1.2,
+        "zoomFrom": 1.15,
+        "zoomTo": 1.06,
+        "panX": 0,
+        "chibiX": 0.54,
+        "chibiY": 0.75,
+        "chibiScale": 1.06
+      },
+      {
+        "type": "visual",
+        "image": "brand/assets/backdrops/ferrari-crimson-dock.jpg",
+        "seconds": 2.7,
+        "zoomFrom": 1.05,
+        "zoomTo": 1.13,
+        "panX": -22,
+        "chibiX": 0.5,
+        "chibiY": 0.77,
+        "chibiScale": 0.98
+      }
+    ]
+  },
+  "goldfish_review": {
+    "status": "reviewed",
+    "score": 94,
+    "verdict": "pass",
+    "notes": "Voice pass: pure visual, 0 CTAs/guru text, 41c caption, 4 tags. 4 chibi PNGs + 4 car JPGs ok. Exact 13.85s; bangScenes [2,5] at 3.95s & 9.95s. chibiY nudged to 0.75-0.77 safe zone.",
+    "reviewed_at": "2026-11-21T17:30:29Z"
+  },
+  "approval": {
+    "approved": true,
+    "approved_by": "Josué D. (SadiTLM)",
+    "approved_at": "2026-11-21T17:30:29Z"
+  },
+  "copy_audit": {
+    "human_score": 62.0,
+    "human_verdict": "REVIEW",
+    "caption_verdict": "REVIEW",
+    "caption_chars": 80,
+    "hashtags": [
+      "#chibi",
+      "#jdm",
+      "#motiondesign",
+      "#nightdrive"
+    ],
+    "visible_125": "Midnight shift, 9mm sobre asfalto mojado.\n\n#chibi #jdm #motiondesign #nightdrive",
+    "audited_at": "2026-11-21T17:28:10Z"
+  },
+  "production": {
+    "dir": "pipeline/04_production/20261121-opcion-b-chibi-bang-sync",
+    "video": "reel.mp4",
+    "video_with_audio": "reel_con_audio.mp4",
+    "video_without_audio": "reel_sin_sonido.mp4",
+    "audio_sync_guide": "AUDIO_SYNC.md",
+    "cover": "cover.jpg",
+    "sheet": "sheet.jpg",
+    "zones": "zones.jpg",
+    "produced_at": "2026-11-21T17:32:30Z"
+  }
+}

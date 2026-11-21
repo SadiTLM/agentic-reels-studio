@@ -16,7 +16,7 @@ import {
 import { AFFIX, PUNCH, STAGGER, formatStat, loadFonts, statParts } from "./layout";
 import { FONTS, HEIGHT, LEFT_INSET, SAFE, SAFE_H, SAFE_W, SMALL, WIDTH, resolveTheme } from "./theme";
 import type { Block, Scene, SceneLayout, ShortProps, Theme } from "./types";
-import { ChibiDanceOverlay, ProceduralBackdrop, TimelineHud } from "./VisualModes";
+import { ChibiDanceOverlay, CinematicVisualLayer, ProceduralBackdrop, SubtleWatermark, TimelineHud } from "./VisualModes";
 import { Words, settleFrame } from "./Words";
 
 loadFonts();
@@ -266,18 +266,43 @@ const SceneView: React.FC<SceneProps> = ({ scene, l, theme, first, props, seed }
       );
       break;
     }
+    case "visual":
+      body = null;
+      break;
   }
 
   const hasProcedural = Boolean(props.visualMode && props.visualMode !== "ambient");
+  const effectiveBpm = props.bpm ?? props.chibi?.bpm ?? 155;
+  const sceneIdx = props.scenes.indexOf(scene);
+  const bangSet = new Set<number>([
+    ...(props.chibi?.bangScene != null ? [props.chibi.bangScene] : []),
+    ...(props.chibi?.bangScenes ?? []),
+  ]);
+  const isBang = bangSet.has(sceneIdx);
 
   return (
     <AbsoluteFill>
-      {scene.image || (!props.background && !hasProcedural) ? (
+      {scene.type === "visual" && scene.image ? (
+        <CinematicVisualLayer
+          src={scene.image}
+          frames={l.frames}
+          bpm={effectiveBpm}
+          first={first}
+          isBang={isBang}
+          zoomFrom={scene.zoomFrom}
+          zoomTo={scene.zoomTo}
+          panX={scene.panX}
+          dim={props.backdropDim ?? 0}
+          bgColor={theme.bg}
+        />
+      ) : scene.image || (!props.background && !hasProcedural) ? (
         <Backdrop theme={theme} src={scene.image} frames={l.frames} seed={seed} dim={props.backdropDim} />
       ) : null}
-      <AbsoluteFill style={{ transform: `scale(${punch})`, transformOrigin: scene.type === "item" || scene.type === "quote" ? ORIGIN_LEFT : ORIGIN_CENTER }}>
-        {body}
-      </AbsoluteFill>
+      {body ? (
+        <AbsoluteFill style={{ transform: `scale(${punch})`, transformOrigin: scene.type === "item" || scene.type === "quote" ? ORIGIN_LEFT : ORIGIN_CENTER }}>
+          {body}
+        </AbsoluteFill>
+      ) : null}
       {footer ? (
         <div
           style={{
@@ -346,8 +371,8 @@ export const Short: React.FC<ShortProps & { guides?: boolean; mute?: boolean }> 
   const theme = props.resolvedTheme ?? resolveTheme(props.theme ?? undefined, props.font ?? undefined);
   const layout = props.layout ?? [];
   const music = props.music;
-  const seed = props.scenes.map((s) => s.text ?? s.title ?? s.label ?? "").join("|");
-  const effectiveBpm = props.bpm ?? props.chibi?.bpm ?? 120;
+  const seed = props.scenes.map((s) => s.text ?? s.title ?? s.label ?? s.image ?? "").join("|");
+  const effectiveBpm = props.bpm ?? props.chibi?.bpm ?? 155;
   return (
     <AbsoluteFill style={{ background: theme.bg, width: WIDTH, height: HEIGHT }}>
       {props.visualMode && props.visualMode !== "ambient" ? (
@@ -362,8 +387,9 @@ export const Short: React.FC<ShortProps & { guides?: boolean; mute?: boolean }> 
         </Sequence>
       ))}
       {props.chibi ? (
-        <ChibiDanceOverlay chibi={props.chibi} layout={layout} bpm={effectiveBpm} accent={theme.accent} />
+        <ChibiDanceOverlay chibi={props.chibi} scenes={props.scenes} layout={layout} bpm={effectiveBpm} accent={theme.accent} />
       ) : null}
+      {props.watermark ? <SubtleWatermark text={props.watermark} /> : null}
       {props.visualMode === "timeline" ? (
         <TimelineHud layout={layout} theme={theme} bpm={effectiveBpm} />
       ) : null}

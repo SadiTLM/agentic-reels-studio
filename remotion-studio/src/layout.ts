@@ -333,12 +333,19 @@ export const planShort = async (props: ShortProps, fps: number) => {
         hold = Math.max(1.4, read(s.text) + 0.6 * read(s.sub));
         if (i !== props.scenes.length - 1) warnings.push(`${label}: an end scene works only as the last scene.`);
         break;
+      case "visual":
+        if (!s.image && !props.background && (!props.visualMode || props.visualMode === "ambient")) {
+          throw new Error(`${label}: visual scene requires "image", "background", or "visualMode".`);
+        }
+        reveal = 0;
+        hold = 0;
+        break;
       default:
-        throw new Error(`${label}: unknown scene type "${(s as Scene).type}". Use hook, text, stat, item, quote or end.`);
+        throw new Error(`${label}: unknown scene type "${(s as Scene).type}". Use hook, text, stat, item, quote, end or visual.`);
     }
-    const needed = ENTRY + 0.4 * reveal + hold;
+    const needed = s.type === "visual" ? 0 : ENTRY + 0.4 * reveal + hold;
     // Floors so a number or list item stays up long enough to register after it lands.
-    const floor = s.type === "stat" ? 2.0 : s.type === "item" ? 1.8 : 1.0;
+    const floor = s.type === "visual" ? 0.5 : s.type === "stat" ? 2.0 : s.type === "item" ? 1.8 : 1.0;
     let sec = Math.min(Math.max(needed / pace, floor), 8);
     if (s.seconds != null) sec = Number(s.seconds);
     secs.push(sec);
@@ -357,10 +364,10 @@ export const planShort = async (props: ShortProps, fps: number) => {
     layout.forEach((l) => (l.blocks.footer = f));
   }
 
-  // Cut points. With a tempo, each cut moves to the next beat (never earlier).
+  // Cut points. With a tempo (unless exactTiming is set), each cut moves to the next beat.
   let t = 0;
   let prevFrame = 0;
-  const beat = props.bpm ? 60 / props.bpm : 0;
+  const beat = props.bpm && !props.exactTiming ? 60 / props.bpm : 0;
   secs.forEach((sec, i) => {
     t += sec;
     if (beat) t = Math.max(Math.ceil(t / beat - 0.15), Math.round(prevFrame / fps / beat) + 1) * beat;
@@ -369,12 +376,14 @@ export const planShort = async (props: ShortProps, fps: number) => {
     layout[i].frames = end - prevFrame;
     prevFrame = end;
     const actual = layout[i].frames / fps;
-    if (actual < needs[i] * 0.75) {
+    if (needs[i] > 0 && actual < needs[i] * 0.75) {
       warnings.push(`Scene ${i + 1} (${props.scenes[i].type}): ${actual.toFixed(1)}s is too fast to read; it needs about ${needs[i].toFixed(1)}s.`);
     }
   });
 
-  if (props.scenes[0].type !== "hook") warnings.push("Scene 1 is not a hook. The first second decides whether people stay; start with a hook scene.");
+  if (props.scenes[0].type !== "hook" && props.scenes[0].type !== "visual") {
+    warnings.push("Scene 1 is not a hook. The first second decides whether people stay; start with a hook scene.");
+  }
   if (props.scenes.length > 16) warnings.push(`${props.scenes.length} scenes is a lot for one short; cut to the strongest 8 to 12.`);
   void SAFE_H;
 

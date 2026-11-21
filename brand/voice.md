@@ -1,25 +1,21 @@
 # Brand Voice & Identity — Josué D. (SadiTLM)
 
-> Portafolio y estudio de automatización agéntica de **Josué D.** (`SadiTLM`). Todas las skills de guionado, copy y revisión leen este archivo antes de generar contenido.
+> Dirección creativa y portafolio visual automatizado con IA de **Josué D.** (`SadiTLM`). Todas las skills de ideación, producción visual, copy y revisión leen este archivo antes de generar contenido.
 
-## 1. Identidad
-- **Creador / Ingeniero:** Josué D.
-- **Alias / Estudio:** SadiTLM
-- **Nombre público:** Josué D. · SadiTLM
-- **Instagram Handle:** `@saditlm` *(actualizar si usas otro handle en IG)*
-- **Idioma principal:** Español (neutro/técnico, natural, directo; términos de ingeniería en inglés cuando son estándar como *harness*, *agent*, *workflow*, *pipeline*).
-- **Propuesta de valor:** Construyo sistemas automatizados con agentes de IA que investigan, diseñan, verifican y producen resultados reales de punta a punta sin fricción manual.
+## 1. Identidad y Objetivo
+- **Creador:** Josué D.
+- **Alias / Firma creativa:** SadiTLM (`@saditlm`)
+- **Objetivo del canal:** Crecimiento orgánico de seguidores y vistas mediante **piezas visuales limpias, estéticas ("fancy") y de alta retención** creadas con IA + código, pensadas para disfrutarse en el feed y lucirse en el portafolio creativo.
+- **NO es un canal de ventas ni de gurús:** Prohibido vender cursos, enseñar tutoriales genéricos o usar formatos comerciales agresivos.
 
-## 2. Audiencia Objetivo
-- Fundadores técnicos, equipos de producto, ingenieros y dueños de negocio que buscan automatizaciones agénticas confiables y auditables — no demos frágiles.
+## 2. Reglas de Estética y Voz (Obligatorias)
+- **Visual limpio, cero texto invasivo:** El protagonismo es 100% la imagen, la animación, el ritmo al beat y las transiciones (estilo `Muestras`: chibi anime bailando sobre cortes rápidos de autos, visuales hipnóticos, estética nocturna/editorial). Nada de bloques gigantes de texto de marketing tapando la pieza.
+- **Cero CTAs de embudo o spam:** **Prohibido** escribir *"Comenta X"*, *"Manda DM"*, *"Te paso el repo/solución"*, *"Link en mi bio para comprar"*, *"Deja de hacer X"*.
+- **Copy minimalista y "fancy":** 1 línea corta y natural con vibra/atmósfera (máximo 120 caracteres) + 2 a 4 hashtags discretos y específicos (nunca `#viral`, `#fyp`, `#parati`, `#explorepage`).
+- **Cero relleno de IA:** Prohibido usar frases tipo *"En el mundo actual..."*, *"No es X, es Y"*, *"Desbloquea tu potencial"*, rayas largas (`—`) o muros de emojis (`🚀🔥💡`).
+- **Firma discreta:** Si se incluye marca en video, usar firma minimalista de baja opacidad (`saditlm`) que no compita con la escena.
 
-## 3. Reglas de Voz y Estilo
-- **Directo y concreto:** Muestra sistemas reales, repositorios, scripts y resultados medibles. Evita promesas vacías.
-- **Cero relleno de IA:** Prohibido usar frases tipo *"En el mundo actual..."*, *"No es X, es Y"*, *"Desbloquea tu potencial"*, rayas largas (`—`) excesivas o listas genéricas de emojis (`🚀🔥💡`).
-- **Gancho en los primeros 2 segundos:** Empieza con una fricción real, un número verificable o una arquitectura específica.
-- **Una sola idea y un solo CTA por pieza:** Por ejemplo: *"Comenta STUDIO y te paso el repo"* o *"Mira el portafolio en el link de mi bio"*.
-
-## 4. Identidad Visual (Reels & Portafolio)
-- **Tema por defecto:** Fondo carbón `#0E1014`, texto marfil `#F5F3EE`, acento terracota/cobre `#E05A36`, texto sobre acento `#FFFFFF`.
-- **Tipografía:** Instrument Serif (títulos editoriales) + Inter / Plus Jakarta Sans (cuerpo limpio) + JetBrains Mono (métricas y código).
-- **Zona segura 9:16:** Mantener texto principal fuera del 14% superior, 35% inferior y 6% lateral.
+## 3. Estándar Técnico 9:16 y Audio Nativo
+- **Formato:** 1080×1920, 30 fps, H.264 (`yuv420p`, `bt709`), AAC.
+- **Exportación dual obligatoria:** Cada Reel entrega `reel_con_audio.mp4` (para revisar sincronización exacta al beat), `reel_sin_sonido.mp4` (mudo para subir a Instagram y poner el audio oficial manualmente) y `AUDIO_SYNC.md` (canción exacta + segundo de inicio + mapa de cortes).
+- **Zona segura 9:16:** Mantener personaje principal y detalles clave fuera del 14% superior y 22% inferior de la UI de Reels.

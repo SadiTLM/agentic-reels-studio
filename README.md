@@ -13,11 +13,11 @@ Sistema automatizado de producción de contenido para Instagram Reels y Carrusel
 ```
 
 ### Skills Instaladas (`skills/`)
-- **Orquestador:** `agentic-reels-pipeline` + `ig-muestras-remixer` (motores visuales Opción A/B + exportación dual con/sin sonido)
+- **Orquestador:** `agentic-reels-pipeline` + `ig-muestras-remixer` (producción visual limpia sin CTAs de venta + exportación dual con/sin sonido)
 - **Tendencias:** `last30days` (Reddit, HN, GitHub, X, YouTube, Web) + `ig-viral` (`swipe.py`)
 - **Guiones, Hooks y Estrategia IG:** `ig-reel` (26 fórmulas, `hookscore.py`, `beats.py`), `ig-plan`, `ig-carousel`, `ig-story`, `ig-repurpose`, `ig-audit`, `ig-profile`, `ig-comment`, `ig-reply`, `ig-dm`
 - **Copy & Humanización:** `ig-caption` (`caption.py`), `ig-human` (`detect.py`, `humanize.py`, `slop.json`), `copywriting`, `content-strategy`, `social`
-- **Producción Visual 9:16 & 4:5:** `instagram-skill` (`reel.py`, `render_slides.py`, `ig_check.py`, `preview.py`) + `remotion-shorts-skill` (React/Remotion 1080×1920 H.264/AAC con modos `particles`/`ellipse`/`timeline`, overlay `chibi` al BPM y zonas seguras)
+- **Producción Visual 9:16 & 4:5:** `instagram-skill` (`reel.py`, `render_slides.py`, `ig_check.py`, `preview.py`) + `remotion-shorts-skill` (React/Remotion 1080×1920 H.264/AAC con escenas `visual` limpias con speed-ramp RGB, overlay `chibi` al BPM con VFX de impacto y zonas seguras)
 
 ---
 
@@ -45,8 +45,8 @@ python3 scripts/studio.py produce <idea_id>
 python3 scripts/studio.py package <idea_id>
 
 # 5b. Analizar BPM / preparar sprites chibi / exportar dual con canción y segundo exacto
-python3 scripts/audio_sync.py analyze referencia.mp4 --extract-audio ref.mp3
-python3 scripts/audio_sync.py dual-export reel.mp4 --out out/ --song "9mm" --artist "Memphis Cult" --start 14.0 --bpm 148 --audio ref.mp3
+python3 scripts/audio_sync.py analyze referencia.mp4 --extract-audio /tmp/ref.mp3
+python3 scripts/audio_sync.py dual-export reel.mp4 --out out/ --song "9mm" --artist "Memphis Cult, Groove Dealers, SPLYXER" --start 0.0 --bpm 155 --audio /tmp/ref.mp3
 python3 scripts/sprite_prep.py split-sheet hoja_poses.png --cols 2 --rows 2 --out brand/assets/mi-chibi
 python3 scripts/sprite_prep.py extract-dance baile.mp4 --fps 3 --out /tmp/baile_poses
 
