@@ -1,0 +1,69 @@
+{
+  "id": "20261121-bandida-sakuga-9mm",
+  "title": "Bandida Bella Sakuga v4 · 9mm Exact Frame-Matched Choreography",
+  "format": "reel",
+  "project_ref": "agentic-reels-studio",
+  "handle": "@saditlm",
+  "video_file": "reel.mp4",
+  "video_with_audio": "reel_con_audio.mp4",
+  "video_without_audio": "reel_sin_sonido.mp4",
+  "audio_sync_guide": "AUDIO_SYNC.md",
+  "audio_sync": {
+    "song": "9mm",
+    "artist": "Memphis Cult, Groove Dealers, SPLYXER",
+    "instagram_audio_search": "9mm Memphis Cult Groove Dealers SPLYXER",
+    "start_second": 0.0,
+    "start_timestamp": "0:00",
+    "bpm": 155.0,
+    "video_duration_s": 13.87,
+    "files": {
+      "preview_with_audio": "reel_con_audio.mp4",
+      "upload_without_audio": "reel_sin_sonido.mp4"
+    },
+    "reference_audio_used": "ref35_audio.mp3",
+    "cuts": [
+      {
+        "at": 0.0,
+        "label": "Porsche GT3 RS Sway & Arm Pop"
+      },
+      {
+        "at": 1.85,
+        "label": "Neon Alley Back-View Turn & Crouch Windup"
+      },
+      {
+        "at": 3.95,
+        "label": "BANG #1 Ferrari Crimson Dock Shatter"
+      },
+      {
+        "at": 5.05,
+        "label": "Skyline R34 Roof Bounce Groove"
+      },
+      {
+        "at": 8.05,
+        "label": "GT3 RS Spin Flash + RGB Prism Tunnel"
+      },
+      {
+        "at": 9.95,
+        "label": "BANG #2 Close-Up Neon Alley Shatter"
+      },
+      {
+        "at": 11.15,
+        "label": "Crimson Dock Outro Strut"
+      }
+    ]
+  },
+  "cover_file": "cover.jpg",
+  "caption_file": "caption.txt",
+  "caption": "Midnight drift. 9mm sakuga.\n\n#saditlm #nightdrift #animeedit #carreels",
+  "share_to_feed": true,
+  "packaged_at": "2026-11-22T02:50:55Z",
+  "approved": true,
+  "copy_audit": {},
+  "goldfish_review": {
+    "status": "reviewed",
+    "score": 96,
+    "verdict": "pass",
+    "notes": "Zero-context Goldfish PASS (96/100): zero invented claims/CTAs, 4 specific hashtags, 13.85s 155-BPM beat sync, 29 verified on-disk assets, Scene 4 Skyline R34 roof alignment verified in v4.1.",
+    "reviewed_at": "2026-11-22T02:50:27Z"
+  }
+}

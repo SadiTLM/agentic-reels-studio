@@ -270,9 +270,29 @@
     ]
   },
   "goldfish_review": {
-    "status": "PASS",
+    "status": "reviewed",
     "score": 96,
-    "reviewed_at": "2026-11-21T19:42:23Z",
-    "summary": "All brand voice rules, zero-claim/zero-CTA guardrails, 4 specific hashtags, exact 13.85s/155-BPM timing with bangScenes [2, 5], and all 29 unique on-disk JPG/PNG assets pass verification."
+    "verdict": "pass",
+    "notes": "Zero-context Goldfish PASS (96/100): zero invented claims/CTAs, 4 specific hashtags, 13.85s 155-BPM beat sync, 29 verified on-disk assets, Scene 4 Skyline R34 roof alignment verified in v4.1.",
+    "reviewed_at": "2026-11-22T02:50:27Z"
+  },
+  "status": "ready_to_post",
+  "approval": {
+    "approved": true,
+    "approved_by": "Josue D. (SadiTLM)",
+    "approved_at": "2026-11-22T02:50:27Z"
+  },
+  "caption": "Midnight drift. 9mm sakuga.\n\n#saditlm #nightdrift #animeedit #carreels",
+  "handle": "@saditlm",
+  "production": {
+    "dir": "pipeline/04_production/20261121-bandida-sakuga-9mm",
+    "video": "reel.mp4",
+    "video_with_audio": "reel_con_audio.mp4",
+    "video_without_audio": "reel_sin_sonido.mp4",
+    "audio_sync_guide": "AUDIO_SYNC.md",
+    "cover": "cover.jpg",
+    "sheet": "sheet.jpg",
+    "zones": "zones.jpg",
+    "produced_at": "2026-11-22T02:50:53Z"
   }
 }

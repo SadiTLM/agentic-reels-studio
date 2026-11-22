@@ -1,4 +1,18 @@
 {
+  "brand": {
+    "name": "Josué D. · SadiTLM",
+    "handle": "@saditlm"
+  },
+  "timezone": "America/Mexico_City",
+  "accounts": {
+    "main": {
+      "handle": "@saditlm",
+      "timezone": "America/Mexico_City",
+      "times": [
+        "19:00"
+      ]
+    }
+  },
   "posts": [
     {
       "id": "20261121-bandida-sakuga-9mm",
@@ -10,7 +24,7 @@
       "caption": "Midnight drift. 9mm sakuga.\n\n#saditlm #nightdrift #animeedit #carreels",
       "targets": [
         {
-          "account": "saditlm"
+          "account": "main"
         }
       ]
     }
