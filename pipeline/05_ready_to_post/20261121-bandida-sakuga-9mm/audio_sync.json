@@ -14,31 +14,31 @@
   "cuts": [
     {
       "at": 0.0,
-      "label": "Porsche GT3 RS Sway & Arm Pop"
+      "label": "Porsche GT3 RS 15fps Sway & Dual Finger-Guns"
     },
     {
       "at": 1.85,
-      "label": "Neon Alley Back-View Turn & Crouch Windup"
+      "label": "Neon Alley 360 Back-View Heel-Kick & Deep Crouch"
     },
     {
       "at": 3.95,
-      "label": "BANG #1 Ferrari Crimson Dock Shatter"
+      "label": "BANG #1 Two-Hand 9mm Recoil & Smoke Blow"
     },
     {
       "at": 5.05,
-      "label": "Skyline R34 Roof Bounce Groove"
+      "label": "Skyline R34 Dedicated Car-Roof Groove (14fps)"
     },
     {
       "at": 8.05,
-      "label": "GT3 RS Spin Flash + RGB Prism Tunnel"
+      "label": "GT3 RS 360 Spin + RGB Prism Tunnel"
     },
     {
       "at": 9.95,
-      "label": "BANG #2 Close-Up Neon Alley Shatter"
+      "label": "BANG #2 Close-Up Smoke Blow & Dual Guns"
     },
     {
       "at": 11.15,
-      "label": "Crimson Dock Outro Strut"
+      "label": "Crimson Dock Walk Spin & Forward Lean-In Peace-Sign Bow"
     }
   ]
 }

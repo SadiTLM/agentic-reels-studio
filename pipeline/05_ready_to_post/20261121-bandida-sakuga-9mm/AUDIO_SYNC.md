@@ -21,10 +21,10 @@
 ## Mapa de cortes al beat
 | Segundo | Escena / Golpe |
 |---|---|
-| `0.00s` | Porsche GT3 RS Sway & Arm Pop |
-| `1.85s` | Neon Alley Back-View Turn & Crouch Windup |
-| `3.95s` | BANG #1 Ferrari Crimson Dock Shatter |
-| `5.05s` | Skyline R34 Roof Bounce Groove |
-| `8.05s` | GT3 RS Spin Flash + RGB Prism Tunnel |
-| `9.95s` | BANG #2 Close-Up Neon Alley Shatter |
-| `11.15s` | Crimson Dock Outro Strut |
+| `0.00s` | Porsche GT3 RS 15fps Sway & Dual Finger-Guns |
+| `1.85s` | Neon Alley 360 Back-View Heel-Kick & Deep Crouch |
+| `3.95s` | BANG #1 Two-Hand 9mm Recoil & Smoke Blow |
+| `5.05s` | Skyline R34 Dedicated Car-Roof Groove (14fps) |
+| `8.05s` | GT3 RS 360 Spin + RGB Prism Tunnel |
+| `9.95s` | BANG #2 Close-Up Smoke Blow & Dual Guns |
+| `11.15s` | Crimson Dock Walk Spin & Forward Lean-In Peace-Sign Bow |
