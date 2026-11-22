@@ -3,7 +3,7 @@
 ## Datos exactos para Instagram Reels
 - **Canción:** 9mm
 - **Artista:** Memphis Cult, Groove Dealers, SPLYXER
-- **Buscar en Audio de Instagram:** `9mm Memphis Cult, Groove Dealers, SPLYXER`
+- **Buscar en Audio de Instagram:** `9mm Memphis Cult Groove Dealers SPLYXER`
 - **Segundo exacto de inicio:** `0:00` (0.0 s)
 - **BPM del ritmo:** `155.0`
 - **Duración del Reel:** `13.87 s`
@@ -14,7 +14,7 @@
 
 ## Pasos rápidos al subir en Instagram
 1. Sube `reel_sin_sonido.mp4` como nuevo Reel.
-2. Toca el ícono de **Audio / Música** y busca `9mm Memphis Cult, Groove Dealers, SPLYXER`.
+2. Toca el ícono de **Audio / Música** y busca `9mm Memphis Cult Groove Dealers SPLYXER`.
 3. Desliza la barra del audio exactamente al segundo **`0:00`**.
 4. Verifica en la previsualización que el primer beat fuerte coincida con el corte principal y publica.
 

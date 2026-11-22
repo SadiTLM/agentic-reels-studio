@@ -53,6 +53,8 @@ export type Scene = {
   bangSide?: "left" | "right";
   /** Trigger #35-style radial RGB prism tunnel speed-ramp warp on the final 6 frames of this scene. */
   prismOut?: boolean;
+  /** Render wet-asphalt mirrored reflection beneath character (set false when standing on a car roof, default true). */
+  chibiReflection?: boolean;
 };
 
 export type Theme = {

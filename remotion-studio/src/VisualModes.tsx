@@ -564,7 +564,7 @@ export const ChibiDanceOverlay: React.FC<{
         </svg>
       ) : null}
 
-      {/* Ground contact shadow + atmospheric wet-asphalt reflection */}
+      {/* Ground contact shadow + optional atmospheric wet-asphalt reflection */}
       {showShadow ? (
         <>
           <div
@@ -573,28 +573,30 @@ export const ChibiDanceOverlay: React.FC<{
               left: cx - spriteH * 0.3,
               top: bottomY - 16,
               width: spriteH * 0.6,
-              height: 40,
+              height: curScene?.chibiReflection === false ? 26 : 40,
               borderRadius: "50%",
-              background: "radial-gradient(ellipse at center, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0) 74%)",
+              background: "radial-gradient(ellipse at center, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0) 74%)",
               transform: `scale(${1 - hop / 180})`,
             }}
           />
-          <div
-            style={{
-              position: "absolute",
-              left: cx,
-              top: bottomY - 8,
-              height: spriteH,
-              transform: `translate(-50%, 0) scaleY(-0.56) scaleX(${(squashX * bangPop * cameraBassPump).toFixed(4)}) rotate(${swayDeg.toFixed(2)}deg)`,
-              transformOrigin: "top center",
-              opacity: 0.25,
-              filter: `brightness(0.75) blur(4px) drop-shadow(0 0 10px ${rimColor})`,
-              maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0) 68%)",
-              WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0) 68%)",
-            }}
-          >
-            {renderCharacter()}
-          </div>
+          {curScene?.chibiReflection !== false ? (
+            <div
+              style={{
+                position: "absolute",
+                left: cx,
+                top: bottomY - 8,
+                height: spriteH,
+                transform: `translate(-50%, 0) scaleY(-0.56) scaleX(${(squashX * bangPop * cameraBassPump).toFixed(4)}) rotate(${swayDeg.toFixed(2)}deg)`,
+                transformOrigin: "top center",
+                opacity: 0.25,
+                filter: `brightness(0.75) blur(4px) drop-shadow(0 0 10px ${rimColor})`,
+                maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0) 68%)",
+                WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0) 68%)",
+              }}
+            >
+              {renderCharacter()}
+            </div>
+          ) : null}
         </>
       ) : null}
 

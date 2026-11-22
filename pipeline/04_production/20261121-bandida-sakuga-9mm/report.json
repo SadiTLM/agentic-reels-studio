@@ -1,5 +1,5 @@
 {
-  "source": "short.json",
+  "source": "../../../pipeline/04_production/20261121-bandida-sakuga-9mm/short.json",
   "seconds": 13.87,
   "fps": 30,
   "width": 1080,
@@ -51,5 +51,5 @@
   ],
   "warnings": [],
   "video": "short.mp4",
-  "bytes": 16667576
+  "bytes": 16508728
 }
